@@ -23,21 +23,27 @@
         </nav>
     </header>
     <main>
-        <section class="container categories">
+        <section class="sectionWrapper categories">
             <h1>Categories</h1>
-            <div id="categoryContainer"></div>
+            <div class="categoriesContainer"></div>
         </section>
-        <section class="container difficulty hidden">
+        <section class="sectionWrapper difficulty hidden">
             <h1>Difficulty</h1>
             <div>
-                <button id="easy" type="button" class="btn btn-success" onclick="difficultyButtonClicked(this.id)">Easy</button>
-                <button id="medium" type="button" class="btn btn-primary" onclick="difficultyButtonClicked(this.id)">Medium</button>
-                <button id="hard" type="button" class="btn btn-danger" onclick="difficultyButtonClicked(this.id)">Hard</button>
+                <button id="easy" type="button" class="btn btn-success"
+                    onclick="difficultyButtonClicked(this.id)">Easy</button>
+                <button id="medium" type="button" class="btn btn-primary"
+                    onclick="difficultyButtonClicked(this.id)">Medium</button>
+                <button id="hard" type="button" class="btn btn-danger"
+                    onclick="difficultyButtonClicked(this.id)">Hard</button>
             </div>
         </section>
-        <section class="container questions hidden">
-            <h1>Questions</h1>
-            <div id="questionsContainer"></div>
+        <section class="sectionWrapper questions hidden">
+            <section class="questionContainer">
+                <h1>Questions</h1>
+                <div id="questionsContainer"></div>
+            </section>
+            <aside id="questionList">test</aside>
         </section>
     </main>
     <footer>2022 &copy; Dominik Fuka</footer>

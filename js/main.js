@@ -15,7 +15,7 @@ $(document).ready(() => {
                     text: item.name,
                     id: item.id
                 });
-            $('#categoryContainer').append(categoryNameButton);
+            $('.categoriesContainer').append(categoryNameButton);
             $('#' + item.id).addClass("btn btn-warning");
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
