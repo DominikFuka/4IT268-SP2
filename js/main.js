@@ -89,13 +89,50 @@ const showQuestion = (index) => {
         $('#questionList > #question' + index).prop('disabled', false);
     });
     $('#questionList > #question' + index).prop('disabled', true);
-    // check if it is first or last question
+    // check if it is first or last question to disable nav buttons
     $('#prevQBtn').prop('disabled', index == 0);
     $('#nextQBtn').prop('disabled', index == questionSet.length - 1);
     // show text of current question
     $('.questionText').text(decodeHTML(questionSet[index].question));
     // set question number in heading
     $('#questionHeading').text('QUESTION #' + (index + 1));
+    // clear answers
+    $('#answersContainer').empty();
+    // show answers
+    showAnswers(index);
+}
+
+const showAnswers = (index) => {
+    // check for question type
+    if (questionSet[index].type == 'multiple') {
+        // save correct answer
+        // get other answers and add correct to them
+        var answers = questionSet[index].incorrect_answers;
+        answers.push(questionSet[index].correct_answer);
+        // mix them up
+        shuffleArray(answers);
+        // show answers
+        $.each(answers, function (index, item) {
+            let answerCheckbox = $('\
+            <div class="form-check>\
+                <input class="form-check-input" type="checkbox" value="" id="answer' + (index + 1) + '">\
+                <label class="form-check-label" for="answer' + (index + 1) + '">' + answers[index] + '</label>\
+            </div>');
+            $('#answersContainer').append(answerCheckbox);
+        });
+        let answerCheckbox
+    } else if (questionSet[index].type == 'boolean') {
+        // save correct answer
+        // show answers
+
+    }
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }
 
 const initQuiz = (questions) => {
