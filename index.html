@@ -18,7 +18,7 @@
             <img class="logo" src="./img/master-trivia-logo.svg" alt="Master Trivia logo">
         </figure>
         <nav>
-            <button id="btnHomepage" type="button" class="btn btn-light btn-nav">Back to homepage</button>
+            <button type="button" class="btn btn-light btn-nav" onclick="showHomepage()">Back to homepage</button>
             <button type="button" class="btn btn-light btn-nav">My statistics</button>
         </nav>
     </header>
@@ -26,6 +26,14 @@
         <section class="container categories">
             <h1>Categories</h1>
             <div id="categoryContainer"></div>
+        </section>
+        <section class="container difficulty hidden">
+            <h1>Difficulty</h1>
+            <div>
+                <button id="easy" type="button" class="btn btn-success" onclick="difficultyButtonClicked(this.id)">Easy</button>
+                <button id="medium" type="button" class="btn btn-primary" onclick="difficultyButtonClicked(this.id)">Medium</button>
+                <button id="hard" type="button" class="btn btn-danger" onclick="difficultyButtonClicked(this.id)">Hard</button>
+            </div>
         </section>
         <section class="container questions hidden">
             <h1>Questions</h1>
