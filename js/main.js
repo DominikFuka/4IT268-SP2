@@ -89,13 +89,18 @@ const listQuestions = (questions) => {
 }
 
 function showHomepage() {
+    // show categories selection and hide all other sections
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
     $('.questions').addClass('hidden');
+    // TEMP remove all text with questions
     $('#questionsContainer').empty();
+    // clear question list
+    $('#questionList > button').remove();
 }
 
 function decodeHTML(text) {
+    // using temp text area to convert special characters
     var textField = document.createElement("textarea");
     textField.innerHTML = text;
     return textField.value;
