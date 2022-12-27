@@ -1,6 +1,7 @@
 var selectedCategory;
 const amountQuestions = '10';
 var questionSet;
+var currQIndex = 0;
 
 $(document).ready(() => {
     // show categories as buttons when site loads
@@ -85,6 +86,9 @@ const listQuestions = () => {
 const showQuestion = (index) => {
     // disable button for current question
     $('#questionList > #question' + index).prop('disabled', true);
+    // check if it is first or last question
+    $('#prevQBtn').prop('disabled', index == 0);
+    $('#nextQBtn').prop('disabled', index == questionSet.length - 1);
     // show text of current question
     $('.questionText').text(decodeHTML(questionSet[index].question));
     // set question number in heading
@@ -94,11 +98,24 @@ const showQuestion = (index) => {
 const initQuiz = (questions) => {
     // save fetched set of questions to variable
     questionSet = questions;
-    console.log(questionSet);
     // create aside list
     listQuestions();
     // show first question
-    showQuestion(0);
+    currQIndex = 0;
+    showQuestion(currQIndex);
+}
+
+function questionNavButtonClicked(btnId) {
+    // set current index of question according to nav button
+    if (btnId == 'nextQBtn') {
+        // enable button for previously active question
+        $('#questionList > #question' + currQIndex).prop('disabled', false);
+        currQIndex++;
+    } else if (btnId == 'prevQBtn') {
+        currQIndex--;
+    }
+    // show new question
+    showQuestion(currQIndex);
 }
 
 function showHomepage() {
