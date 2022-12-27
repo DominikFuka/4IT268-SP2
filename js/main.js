@@ -15,7 +15,7 @@ $(document).ready(() => {
                     text: item.name,
                     id: item.id
                 });
-            $('#categoryContainer').append(categoryNameButton);
+            $('.categoriesContainer').append(categoryNameButton);
             $('#' + item.id).addClass("btn btn-warning");
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
@@ -24,8 +24,6 @@ $(document).ready(() => {
         console.error('XHR error', e);
     });
     xhr.send();
-
-    // skryti 
 });
 
 function categoryButtonClicked(param) {
@@ -57,9 +55,9 @@ function difficultyButtonClicked(difficulty) {
             $("#alertNotEnoughQuestions").alert();
             // slide up closing animation for alert after 5 sec
             window.setTimeout(function () {
-                $("#alertNotEnoughQuestions").slideUp(500, function() {
+                $("#alertNotEnoughQuestions").slideUp(500, function () {
                     $(this).remove();
-                }); 
+                });
             }, 6000);
         }
     });
@@ -72,22 +70,37 @@ function difficultyButtonClicked(difficulty) {
 const listQuestions = (questions) => {
     console.log(questions);
     $.each(questions, function (index, item) {
+        // fill aside list
+        var questionListButton = $('<button/>',
+            {
+                text: 'QUESTION #' + (index + 1),
+                id: 'question' + index
+            });
+        $('#questionList').append(questionListButton);
+        $('#question' + index).addClass("btn btn-dark");
+        //$('#' + item.id).click({ id: item.id }, categoryButtonClicked); // TODO onclick function
+        // TEMP - show list of questions
         var questionText = $('<p/>',
             {
-                text: index + 1 + ") " + decodeHTML(item.question)
+                text: (index + 1) + ") " + decodeHTML(item.question)
             });
         $('#questionsContainer').append(questionText);
     });
 }
 
 function showHomepage() {
+    // show categories selection and hide all other sections
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
     $('.questions').addClass('hidden');
+    // TEMP remove all text with questions
     $('#questionsContainer').empty();
+    // clear question list
+    $('#questionList > button').remove();
 }
 
 function decodeHTML(text) {
+    // using temp text area to convert special characters
     var textField = document.createElement("textarea");
     textField.innerHTML = text;
     return textField.value;

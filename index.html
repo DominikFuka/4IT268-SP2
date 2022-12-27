@@ -18,26 +18,35 @@
             <img class="logo" src="./img/master-trivia-logo.svg" alt="Master Trivia logo">
         </figure>
         <nav>
-            <button type="button" class="btn btn-light btn-nav" onclick="showHomepage()">Back to homepage</button>
+            <button type="button" class="btn btn-light btn-nav" onclick="showHomepage()">Homepage</button>
             <button type="button" class="btn btn-light btn-nav">My statistics</button>
         </nav>
     </header>
     <main>
-        <section class="container categories">
+        <section class="sectionWrapper categories">
             <h1>Categories</h1>
-            <div id="categoryContainer"></div>
+            <div class="categoriesContainer"></div>
         </section>
-        <section class="container difficulty hidden">
+        <section class="sectionWrapper difficulty hidden">
             <h1>Difficulty</h1>
             <div>
-                <button id="easy" type="button" class="btn btn-success" onclick="difficultyButtonClicked(this.id)">Easy</button>
-                <button id="medium" type="button" class="btn btn-primary" onclick="difficultyButtonClicked(this.id)">Medium</button>
-                <button id="hard" type="button" class="btn btn-danger" onclick="difficultyButtonClicked(this.id)">Hard</button>
+                <button id="easy" type="button" class="btn btn-success"
+                    onclick="difficultyButtonClicked(this.id)">Easy</button>
+                <button id="medium" type="button" class="btn btn-primary"
+                    onclick="difficultyButtonClicked(this.id)">Medium</button>
+                <button id="hard" type="button" class="btn btn-danger"
+                    onclick="difficultyButtonClicked(this.id)">Hard</button>
             </div>
         </section>
-        <section class="container questions hidden">
-            <h1>Questions</h1>
-            <div id="questionsContainer"></div>
+        <section class="sectionWrapper questions hidden">
+            <section class="questionContainer">
+                <h1>Question #</h1>
+                <div id="questionsContainer"></div>
+            </section>
+            <aside>
+                <h2>Question list</h2>
+                <div id="questionList" class="questionList"></div>
+            </aside>
         </section>
     </main>
     <footer>2022 &copy; Dominik Fuka</footer>
