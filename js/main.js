@@ -1,5 +1,6 @@
 var selectedCategory;
 const amountQuestions = '10';
+var questionSet;
 
 $(document).ready(() => {
     // show categories as buttons when site loads
@@ -68,8 +69,10 @@ function difficultyButtonClicked(difficulty) {
 }
 
 const listQuestions = (questions) => {
-    console.log(questions);
-    $.each(questions, function (index, item) {
+    // save fetched set of questions to variable
+    questionSet = questions;
+
+    $.each(questionSet, function (index, item) {
         // fill aside list
         var questionListButton = $('<button/>',
             {
