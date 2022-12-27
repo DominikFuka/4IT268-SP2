@@ -123,3 +123,9 @@ main {
     justify-content: space-between;
     padding: 15px;
 }
+
+.questionText {
+    font-size: xx-large;
+    text-align: center;
+    padding: 20px;
+}

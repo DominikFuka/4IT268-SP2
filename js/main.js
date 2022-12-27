@@ -46,8 +46,8 @@ function difficultyButtonClicked(difficulty) {
             // hide difficulty and show questions container
             $('.difficulty').addClass("hidden");
             $('.questions').removeClass("hidden");
-            // list fetched questions
-            listQuestions(data.results);
+            // initialize quiz
+            initQuiz(data.results);
         } else if (data.response_code == "1") {
             // alert element
             let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger"></div>').text('Sorry, not enough questions in selected category and difficulty yet. Please select another difficulty.');
@@ -68,10 +68,7 @@ function difficultyButtonClicked(difficulty) {
     xhr.send();
 }
 
-const listQuestions = (questions) => {
-    // save fetched set of questions to variable
-    questionSet = questions;
-
+const listQuestions = () => {
     $.each(questionSet, function (index, item) {
         // fill aside list
         var questionListButton = $('<button/>',
@@ -82,13 +79,26 @@ const listQuestions = (questions) => {
         $('#questionList').append(questionListButton);
         $('#question' + index).addClass("btn btn-dark");
         //$('#' + item.id).click({ id: item.id }, categoryButtonClicked); // TODO onclick function
-        // TEMP - show list of questions
-        var questionText = $('<p/>',
-            {
-                text: (index + 1) + ") " + decodeHTML(item.question)
-            });
-        $('#questionsContainer').append(questionText);
     });
+}
+
+const showQuestion = (index) => {
+    // disable button for current question
+    $('#questionList > #question' + index).prop('disabled', true);
+    // show text of current question
+    $('.questionText').text(decodeHTML(questionSet[index].question));
+    // set question number in heading
+    $('#questionHeading').text('QUESTION #' + (index + 1));
+}
+
+const initQuiz = (questions) => {
+    // save fetched set of questions to variable
+    questionSet = questions;
+    console.log(questionSet);
+    // create aside list
+    listQuestions();
+    // show first question
+    showQuestion(0);
 }
 
 function showHomepage() {
