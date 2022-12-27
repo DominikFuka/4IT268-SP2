@@ -18,7 +18,7 @@
             <img class="logo" src="./img/master-trivia-logo.svg" alt="Master Trivia logo">
         </figure>
         <nav>
-            <button type="button" class="btn btn-light btn-nav" onclick="showHomepage()">Back to homepage</button>
+            <button type="button" class="btn btn-light btn-nav" onclick="showHomepage()">Homepage</button>
             <button type="button" class="btn btn-light btn-nav">My statistics</button>
         </nav>
     </header>
@@ -40,10 +40,13 @@
         </section>
         <section class="sectionWrapper questions hidden">
             <section class="questionContainer">
-                <h1>Questions</h1>
+                <h1>Question #</h1>
                 <div id="questionsContainer"></div>
             </section>
-            <aside id="questionList">test</aside>
+            <aside>
+                <h2>Question list</h2>
+                <div id="questionList" class="questionList"></div>
+            </aside>
         </section>
     </main>
     <footer>2022 &copy; Dominik Fuka</footer>

@@ -24,8 +24,6 @@ $(document).ready(() => {
         console.error('XHR error', e);
     });
     xhr.send();
-
-    // skryti 
 });
 
 function categoryButtonClicked(param) {
@@ -57,9 +55,9 @@ function difficultyButtonClicked(difficulty) {
             $("#alertNotEnoughQuestions").alert();
             // slide up closing animation for alert after 5 sec
             window.setTimeout(function () {
-                $("#alertNotEnoughQuestions").slideUp(500, function() {
+                $("#alertNotEnoughQuestions").slideUp(500, function () {
                     $(this).remove();
-                }); 
+                });
             }, 6000);
         }
     });
@@ -72,9 +70,19 @@ function difficultyButtonClicked(difficulty) {
 const listQuestions = (questions) => {
     console.log(questions);
     $.each(questions, function (index, item) {
+        // fill aside list
+        var questionListButton = $('<button/>',
+            {
+                text: 'QUESTION #' + (index + 1),
+                id: 'question' + index
+            });
+        $('#questionList').append(questionListButton);
+        $('#question' + index).addClass("btn btn-dark");
+        //$('#' + item.id).click({ id: item.id }, categoryButtonClicked); // TODO onclick function
+        // TEMP - show list of questions
         var questionText = $('<p/>',
             {
-                text: index + 1 + ") " + decodeHTML(item.question)
+                text: (index + 1) + ") " + decodeHTML(item.question)
             });
         $('#questionsContainer').append(questionText);
     });
