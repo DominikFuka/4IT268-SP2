@@ -79,12 +79,15 @@ const listQuestions = () => {
             });
         $('#questionList').append(questionListButton);
         $('#question' + index).addClass("btn btn-dark");
-        //$('#' + item.id).click({ id: item.id }, categoryButtonClicked); // TODO onclick function
+        $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
 }
 
 const showQuestion = (index) => {
-    // disable button for current question
+    // enable back all other question buttons and disable button for current question
+    $.each(questionSet, function (index, item) {
+        $('#questionList > #question' + index).prop('disabled', false);
+    });
     $('#questionList > #question' + index).prop('disabled', true);
     // check if it is first or last question
     $('#prevQBtn').prop('disabled', index == 0);
@@ -108,13 +111,18 @@ const initQuiz = (questions) => {
 function questionNavButtonClicked(btnId) {
     // set current index of question according to nav button
     if (btnId == 'nextQBtn') {
-        // enable button for previously active question
-        $('#questionList > #question' + currQIndex).prop('disabled', false);
         currQIndex++;
     } else if (btnId == 'prevQBtn') {
         currQIndex--;
     }
     // show new question
+    showQuestion(currQIndex);
+}
+
+function jumpToQuestion(param) {
+    // update current index
+    currQIndex = param.data.goToIdx;
+    // jump to clicked question
     showQuestion(currQIndex);
 }
 
