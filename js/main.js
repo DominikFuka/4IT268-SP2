@@ -131,8 +131,6 @@ function showHomepage() {
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
     $('.questions').addClass('hidden');
-    // TEMP remove all text with questions
-    $('#questionsContainer').empty();
     // clear question list
     $('#questionList > button').remove();
 }
