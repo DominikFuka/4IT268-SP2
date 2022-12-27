@@ -1,5 +1,7 @@
 var selectedCategory;
 const amountQuestions = '10';
+var questionSet;
+var currQIndex = 0;
 
 $(document).ready(() => {
     // show categories as buttons when site loads
@@ -45,8 +47,8 @@ function difficultyButtonClicked(difficulty) {
             // hide difficulty and show questions container
             $('.difficulty').addClass("hidden");
             $('.questions').removeClass("hidden");
-            // list fetched questions
-            listQuestions(data.results);
+            // initialize quiz
+            initQuiz(data.results);
         } else if (data.response_code == "1") {
             // alert element
             let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger"></div>').text('Sorry, not enough questions in selected category and difficulty yet. Please select another difficulty.');
@@ -67,9 +69,8 @@ function difficultyButtonClicked(difficulty) {
     xhr.send();
 }
 
-const listQuestions = (questions) => {
-    console.log(questions);
-    $.each(questions, function (index, item) {
+const listQuestions = () => {
+    $.each(questionSet, function (index, item) {
         // fill aside list
         var questionListButton = $('<button/>',
             {
@@ -78,14 +79,51 @@ const listQuestions = (questions) => {
             });
         $('#questionList').append(questionListButton);
         $('#question' + index).addClass("btn btn-dark");
-        //$('#' + item.id).click({ id: item.id }, categoryButtonClicked); // TODO onclick function
-        // TEMP - show list of questions
-        var questionText = $('<p/>',
-            {
-                text: (index + 1) + ") " + decodeHTML(item.question)
-            });
-        $('#questionsContainer').append(questionText);
+        $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
+}
+
+const showQuestion = (index) => {
+    // enable back all other question buttons and disable button for current question
+    $.each(questionSet, function (index, item) {
+        $('#questionList > #question' + index).prop('disabled', false);
+    });
+    $('#questionList > #question' + index).prop('disabled', true);
+    // check if it is first or last question
+    $('#prevQBtn').prop('disabled', index == 0);
+    $('#nextQBtn').prop('disabled', index == questionSet.length - 1);
+    // show text of current question
+    $('.questionText').text(decodeHTML(questionSet[index].question));
+    // set question number in heading
+    $('#questionHeading').text('QUESTION #' + (index + 1));
+}
+
+const initQuiz = (questions) => {
+    // save fetched set of questions to variable
+    questionSet = questions;
+    // create aside list
+    listQuestions();
+    // show first question
+    currQIndex = 0;
+    showQuestion(currQIndex);
+}
+
+function questionNavButtonClicked(btnId) {
+    // set current index of question according to nav button
+    if (btnId == 'nextQBtn') {
+        currQIndex++;
+    } else if (btnId == 'prevQBtn') {
+        currQIndex--;
+    }
+    // show new question
+    showQuestion(currQIndex);
+}
+
+function jumpToQuestion(param) {
+    // update current index
+    currQIndex = param.data.goToIdx;
+    // jump to clicked question
+    showQuestion(currQIndex);
 }
 
 function showHomepage() {
@@ -93,8 +131,6 @@ function showHomepage() {
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
     $('.questions').addClass('hidden');
-    // TEMP remove all text with questions
-    $('#questionsContainer').empty();
     // clear question list
     $('#questionList > button').remove();
 }
