@@ -2,6 +2,7 @@ var selectedCategory;
 const amountQuestions = '10';
 var questionSet;
 var currQIndex = 0;
+var currCorrectAns;
 
 $(document).ready(() => {
     // show categories as buttons when site loads
@@ -106,25 +107,38 @@ const showAnswers = (index) => {
     // check for question type
     if (questionSet[index].type == 'multiple') {
         // save correct answer
+        currCorrectAns = questionSet[index].correct_answer;
         // get other answers and add correct to them
-        var answers = questionSet[index].incorrect_answers;
-        answers.push(questionSet[index].correct_answer);
+        let answers = [...questionSet[index].incorrect_answers];
+        answers.push(currCorrectAns);
         // mix them up
         shuffleArray(answers);
         // show answers
         $.each(answers, function (index, item) {
-            let answerCheckbox = $('\
-            <div class="form-check>\
-                <input class="form-check-input" type="checkbox" value="" id="answer' + (index + 1) + '">\
-                <label class="form-check-label" for="answer' + (index + 1) + '">' + answers[index] + '</label>\
-            </div>');
-            $('#answersContainer').append(answerCheckbox);
+            // add Bootstrap structure for each radio answer
+            $('#answersContainer').append('\
+                <div class="form-check">\
+                    <input class="form-check-input" type="radio" name="answerRadio" value="answer' + (index + 1) + '" id="answer' + (index + 1) + '">\
+                    <label class="form-check-label" for="answer' + (index + 1) + '">' + item + '</label>\
+                </div>');
         });
         let answerCheckbox
     } else if (questionSet[index].type == 'boolean') {
         // save correct answer
+        currCorrectAns = questionSet[index].correct_answer;
         // show answers
-
+        // add Bootstrap structure for each radio answer
+        $('#answersContainer').append('\
+        <div class="trueFalseContainer">\
+            <div class="form-check">\
+                <input class="btn-check" type="radio" name="answerRadio" value="answer1" id="answer1" autocomplete="off">\
+                <label class="btn btn-success btn-answer" for="answer1">TRUE</label>\
+            </div>\
+            <div class="form-check">\
+                <input class="btn-check" type="radio" name="answerRadio" value="answer2" id="answer2" autocomplete="off">\
+                <label class="btn btn-danger btn-answer" for="answer2">FALSE</label>\
+            </div>\
+        </div>');
     }
 }
 
@@ -137,7 +151,7 @@ function shuffleArray(array) {
 
 const initQuiz = (questions) => {
     // save fetched set of questions to variable
-    questionSet = questions;
+    questionSet = [...questions];
     // create aside list
     listQuestions();
     // show first question

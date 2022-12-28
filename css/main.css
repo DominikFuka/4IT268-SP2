@@ -20,7 +20,7 @@ h2 {
 
 .btn {
     text-transform: uppercase;
-    font-size: 1.25rem;
+    font-size: larger;
     font-weight: bold;
     padding: 15px;
 }
@@ -101,6 +101,46 @@ main {
 
 .questions>.questionContainer {
     flex-basis: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: center;
+    height: 100%;
+}
+
+.questions>.questionContainer>.answersContainer>.form-check {
+    font-size: x-large;
+    margin: 20px auto;
+}
+
+.questions>.questionContainer>.answersContainer>.trueFalseContainer {
+    display: flex;
+    gap: 25px;
+}
+
+.questions>.questionContainer>.answersContainer>.trueFalseContainer>.form-check {
+    margin: 0px;
+    padding: 0px;
+}
+
+.questions>.questionContainer>.answersContainer .btn-answer {
+    font-size: x-large;
+    font-weight: normal;
+}
+
+.questions>.questionContainer>.questionNav {
+    display: flex;
+    justify-content: space-between;
+    align-self: stretch;
+    padding: 0px 15px;
+}
+
+.questions>.questionContainer>.questionText {
+    font-size: xx-large;
+    font-weight: bolder;
+    text-align: center;
+    padding: 20px 20px 0px 20px;
+    margin-bottom: 25px;
 }
 
 .questions>aside {
@@ -116,16 +156,4 @@ main {
     flex-direction: column;
     gap: 10px;
     padding: 10px;
-}
-
-.questionNav {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-}
-
-.questionText {
-    font-size: xx-large;
-    text-align: center;
-    padding: 20px;
 }
