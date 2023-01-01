@@ -118,28 +118,47 @@ const showAnswers = (index) => {
             // add Bootstrap structure for each radio answer
             $('#answersContainer').append('\
                 <div class="form-check">\
-                    <input class="form-check-input" type="radio" name="answerRadio" value="answer' + (index + 1) + '" id="answer' + (index + 1) + '">\
+                    <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="answer' + (index + 1) + '">\
                     <label class="form-check-label" for="answer' + (index + 1) + '">' + item + '</label>\
                 </div>');
+            // submit form on clicking one of the radios
+            $('#answer' + (index + 1)).on('change', function() {
+                $('#answersContainer').submit(checkCorrectAnswer(this.value));
+            });
         });
         let answerCheckbox
     } else if (questionSet[index].type == 'boolean') {
         // save correct answer
         currCorrectAns = questionSet[index].correct_answer;
-        // show answers
-        // add Bootstrap structure for each radio answer
+        // show answers - add Bootstrap structure for with btn-styled radio
         $('#answersContainer').append('\
         <div class="trueFalseContainer">\
             <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="answer1" id="answer1" autocomplete="off">\
+                <input class="btn-check" type="radio" name="answerRadio" value="True" id="answer1" autocomplete="off">\
                 <label class="btn btn-success btn-answer" for="answer1">TRUE</label>\
             </div>\
             <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="answer2" id="answer2" autocomplete="off">\
+                <input class="btn-check" type="radio" name="answerRadio" value="False" id="answer2" autocomplete="off">\
                 <label class="btn btn-danger btn-answer" for="answer2">FALSE</label>\
             </div>\
         </div>');
+        // submit form on clicking one of the radios
+        $('#answer1,#answer2').on('change', function() {
+            $('#answersContainer').submit(checkCorrectAnswer(this.value));
+        });
     }
+}
+
+function checkCorrectAnswer(answer){
+    if (answer == currCorrectAns) {
+        // answer is correct, mark the question in the list
+        $('#question' + currQIndex).css('color', 'lightgreen');
+    } else {
+        // answer is wrong, mark the question in the list
+        $('#question' + currQIndex).css('color', 'red');
+    }
+    // TODO - save the answer and if it was correct to session storage (for later use when going back to question)
+    // TODO - lock the form so response can't be changed
 }
 
 function shuffleArray(array) {
