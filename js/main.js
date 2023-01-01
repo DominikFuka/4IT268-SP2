@@ -19,7 +19,7 @@ $(document).ready(() => {
                     id: item.id
                 });
             $('.categoriesContainer').append(categoryNameButton);
-            $('#' + item.id).addClass("btn btn-warning");
+            $('#' + item.id).addClass('btn btn-warning');
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
     });
@@ -44,21 +44,21 @@ function difficultyButtonClicked(difficulty) {
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
         // TODO - questions only listed now
-        if (data.response_code == "0") {
+        if (data.response_code == '0') {
             // hide difficulty and show questions container
-            $('.difficulty').addClass("hidden");
-            $('.questions').removeClass("hidden");
+            $('.difficulty').addClass('hidden');
+            $('.questions').removeClass('hidden');
             // initialize quiz
             initQuiz(data.results);
-        } else if (data.response_code == "1") {
+        } else if (data.response_code == '1') {
             // alert element
             let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger"></div>').text('Sorry, not enough questions in selected category and difficulty yet. Please select another difficulty.');
             // pop up alert above difficulty buttons
             $('.difficulty > h1').after(errorMsg);
-            $("#alertNotEnoughQuestions").alert();
+            $('#alertNotEnoughQuestions').alert();
             // slide up closing animation for alert after 5 sec
             window.setTimeout(function () {
-                $("#alertNotEnoughQuestions").slideUp(500, function () {
+                $('#alertNotEnoughQuestions').slideUp(500, function () {
                     $(this).remove();
                 });
             }, 6000);
@@ -79,7 +79,7 @@ const listQuestions = () => {
                 id: 'question' + index
             });
         $('#questionList').append(questionListButton);
-        $('#question' + index).addClass("btn btn-dark");
+        $('#question' + index).addClass('btn btn-dark');
         $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
 }
@@ -207,7 +207,7 @@ function showHomepage() {
 
 function decodeHTML(text) {
     // using temp text area to convert special characters
-    var textField = document.createElement("textarea");
+    var textField = document.createElement('textarea');
     textField.innerHTML = text;
     return textField.value;
 }
