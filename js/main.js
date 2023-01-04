@@ -29,45 +29,14 @@ $(document).ready(() => {
     xhr.send();
 });
 
-function categoryButtonClicked(param) {
-    // set selected category
-    selectedCategory = param.data.id;
-    // show difficulty selection
-    $('.categories').addClass('hidden');
-    $('.difficulty').removeClass('hidden');
-}
-
-function difficultyButtonClicked(difficulty) {
-    // load 10 questions from selected category of selected difficulty 
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + amountQuestions + '&category=' + selectedCategory + '&difficulty=' + difficulty);
-    xhr.addEventListener('load', () => {
-        const data = JSON.parse(xhr.responseText);
-        // TODO - questions only listed now
-        if (data.response_code == '0') {
-            // hide difficulty and show questions container
-            $('.difficulty').addClass('hidden');
-            $('.questions').removeClass('hidden');
-            // initialize quiz
-            initQuiz(data.results);
-        } else if (data.response_code == '1') {
-            // alert element
-            let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger"></div>').text('Sorry, not enough questions in selected category and difficulty yet. Please select another difficulty.');
-            // pop up alert above difficulty buttons
-            $('.difficulty > h1').after(errorMsg);
-            $('#alertNotEnoughQuestions').alert();
-            // slide up closing animation for alert after 5 sec
-            window.setTimeout(function () {
-                $('#alertNotEnoughQuestions').slideUp(500, function () {
-                    $(this).remove();
-                });
-            }, 6000);
-        }
-    });
-    xhr.addEventListener('error', function (e) {
-        console.error('XHR error', e);
-    });
-    xhr.send();
+const initQuiz = (questions) => {
+    // save fetched set of questions to variable
+    questionSet = [...questions];
+    // create aside list
+    listQuestions();
+    // show first question
+    currQIndex = 0;
+    showQuestion(currQIndex);
 }
 
 const listQuestions = () => {
@@ -161,34 +130,6 @@ function checkCorrectAnswer(answer){
     // TODO - lock the form so response can't be changed
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-const initQuiz = (questions) => {
-    // save fetched set of questions to variable
-    questionSet = [...questions];
-    // create aside list
-    listQuestions();
-    // show first question
-    currQIndex = 0;
-    showQuestion(currQIndex);
-}
-
-function questionNavButtonClicked(btnId) {
-    // set current index of question according to nav button
-    if (btnId == 'nextQBtn') {
-        currQIndex++;
-    } else if (btnId == 'prevQBtn') {
-        currQIndex--;
-    }
-    // show new question
-    showQuestion(currQIndex);
-}
-
 function jumpToQuestion(param) {
     // update current index
     currQIndex = param.data.goToIdx;
@@ -196,7 +137,25 @@ function jumpToQuestion(param) {
     showQuestion(currQIndex);
 }
 
-function showHomepage() {
+/* --- HELPER FUNCTIONS --- */
+
+function decodeHTML(text) {
+    // using temp text area to convert special characters
+    var textField = document.createElement('textarea');
+    textField.innerHTML = text;
+    return textField.value;
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+/* --- ONCLICK FUNCTIONS --- */
+
+function homepageBtnClicked() {
     // show categories selection and hide all other sections
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
@@ -205,9 +164,57 @@ function showHomepage() {
     $('#questionList > button').remove();
 }
 
-function decodeHTML(text) {
-    // using temp text area to convert special characters
-    var textField = document.createElement('textarea');
-    textField.innerHTML = text;
-    return textField.value;
+function prevQBtnClicked(btnId) {
+    // set current index of question according to nav button
+    currQIndex--;
+    // show new question
+    showQuestion(currQIndex);
+}
+
+function nextQBtnClicked(btnId) {
+    // set current index of question according to nav button
+    currQIndex++;
+    // show new question
+    showQuestion(currQIndex);
+}
+
+function categoryButtonClicked(param) {
+    // set selected category
+    selectedCategory = param.data.id;
+    // show difficulty selection
+    $('.categories').addClass('hidden');
+    $('.difficulty').removeClass('hidden');
+}
+
+function difficultyButtonClicked(difficulty) {
+    // load 10 questions from selected category of selected difficulty 
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + amountQuestions + '&category=' + selectedCategory + '&difficulty=' + difficulty);
+    xhr.addEventListener('load', () => {
+        const data = JSON.parse(xhr.responseText);
+        // TODO - questions only listed now
+        if (data.response_code == '0') {
+            // hide difficulty and show questions container
+            $('.difficulty').addClass('hidden');
+            $('.questions').removeClass('hidden');
+            // initialize quiz
+            initQuiz(data.results);
+        } else if (data.response_code == '1') {
+            // alert element
+            let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger"></div>').text('Sorry, not enough questions in selected category and difficulty yet. Please select another difficulty.');
+            // pop up alert above difficulty buttons
+            $('.difficulty > h1').after(errorMsg);
+            $('#alertNotEnoughQuestions').alert();
+            // slide up closing animation for alert after 5 sec
+            window.setTimeout(function () {
+                $('#alertNotEnoughQuestions').slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 6000);
+        }
+    });
+    xhr.addEventListener('error', function (e) {
+        console.error('XHR error', e);
+    });
+    xhr.send();
 }

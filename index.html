@@ -18,7 +18,7 @@
             <img class="logo" src="./img/master-trivia-logo.svg" alt="Master Trivia logo">
         </figure>
         <nav>
-            <button type="button" class="btn btn-light btn-nav" onclick="showHomepage()">Homepage</button>
+            <button type="button" class="btn btn-light btn-nav" onclick="homepageBtnClicked()">Homepage</button>
             <button type="button" class="btn btn-light btn-nav">My statistics</button>
         </nav>
     </header>
@@ -43,12 +43,12 @@
                 <h1 id="questionHeading">Question #0</h1>
                 <div class="questionNav">
                     <button id="prevQBtn" type="button" class="btn btn-secondary"
-                        onclick="questionNavButtonClicked(this.id)">&#8592; Previous</button>
+                        onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>
                     <button id="nextQBtn" type="button" class="btn btn-secondary"
-                        onclick="questionNavButtonClicked(this.id)">Next &#8594;</button>
+                        onclick="nextQBtnClicked(this.id)">Next &#8594;</button>
                 </div>
                 <p class="questionText"></p>
-                <form id="answersContainer" class="answersContainer" method="post" ></form>
+                <form id="answersContainer" class="answersContainer" method="post"></form>
             </section>
             <aside>
                 <h2>Question list</h2>
