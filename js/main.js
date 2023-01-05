@@ -1,5 +1,6 @@
+const AMOUNT_QUESTIONS = '10';
+
 var selectedCategory;
-const amountQuestions = '10';
 var questionSet;
 var currQIndex = 0;
 var currCorrectAns;
@@ -32,14 +33,16 @@ $(document).ready(() => {
 const initQuiz = (questions) => {
     // save fetched set of questions to variable
     questionSet = [...questions];
-    // create aside list
-    listQuestions();
+    // create aside quiz navigation with questions
+    createQuizNav();
+    // create all questions in HTML
+    createQuestions();
     // show first question
     currQIndex = 0;
     showQuestion(currQIndex);
 }
 
-const listQuestions = () => {
+const createQuizNav = () => {
     $.each(questionSet, function (index, item) {
         // fill aside list
         var questionListButton = $('<button/>',
@@ -53,72 +56,85 @@ const listQuestions = () => {
     });
 }
 
-const showQuestion = (index) => {
-    // enable back all other question buttons and disable button for current question
-    $.each(questionSet, function (index, item) {
-        $('#questionList > #question' + index).prop('disabled', false);
-    });
-    $('#questionList > #question' + index).prop('disabled', true);
-    // check if it is first or last question to disable nav buttons
-    $('#prevQBtn').prop('disabled', index == 0);
-    $('#nextQBtn').prop('disabled', index == questionSet.length - 1);
-    // show text of current question
-    $('.questionText').text(decodeHTML(questionSet[index].question));
-    // set question number in heading
-    $('#questionHeading').text('QUESTION #' + (index + 1));
-    // clear answers
-    $('#answersContainer').empty();
-    // show answers
-    showAnswers(index);
-}
-
-const showAnswers = (index) => {
-    // check for question type
-    if (questionSet[index].type == 'multiple') {
-        // save correct answer
-        currCorrectAns = questionSet[index].correct_answer;
-        // get other answers and add correct to them
-        let answers = [...questionSet[index].incorrect_answers];
-        answers.push(currCorrectAns);
-        // mix them up
-        shuffleArray(answers);
-        // show answers
-        $.each(answers, function (index, item) {
-            // add Bootstrap structure for each radio answer
-            $('#answersContainer').append('\
-                <div class="form-check">\
-                    <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="answer' + (index + 1) + '">\
-                    <label class="form-check-label" for="answer' + (index + 1) + '">' + item + '</label>\
-                </div>');
-            // submit form on clicking one of the radios
-            $('#answer' + (index + 1)).on('change', function() {
-                $('#answersContainer').submit(checkCorrectAnswer(this.value));
-            });
-        });
-        let answerCheckbox
-    } else if (questionSet[index].type == 'boolean') {
-        // save correct answer
-        currCorrectAns = questionSet[index].correct_answer;
-        // show answers - add Bootstrap structure for with btn-styled radio
-        $('#answersContainer').append('\
-        <div class="trueFalseContainer">\
-            <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="True" id="answer1" autocomplete="off">\
-                <label class="btn btn-success btn-answer" for="answer1">TRUE</label>\
-            </div>\
-            <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="False" id="answer2" autocomplete="off">\
-                <label class="btn btn-danger btn-answer" for="answer2">FALSE</label>\
-            </div>\
-        </div>');
-        // submit form on clicking one of the radios
-        $('#answer1,#answer2').on('change', function() {
-            $('#answersContainer').submit(checkCorrectAnswer(this.value));
-        });
+const createQuestions = () => {
+    for (let index = 0; index < AMOUNT_QUESTIONS; index++) {
+        // append question to quiz section
+        $('#quizQuestions').append('\
+            <section class="questionContainer" id="questionContainer' + index + '">\
+                <h1>Question #' + (index + 1) + '</h1>\
+                <div class="questionNav">\
+                    <button type="button" class="btn btn-secondary btn-prev-q" onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>\
+                    <button id="nextQBtn" type="button" class="btn btn-secondary btn-next-q" onclick="nextQBtnClicked(this.id)">Next &#8594;</button>\
+                </div>\
+                <p class="questionText">' + decodeHTML(questionSet[index].question) + '</p>\
+                <form id="answersContainer' + index + '" class="answersContainer" method="post"></form>\
+            </section>\
+        ');
+        // answers form according to type
+        if (questionSet[index].type == 'multiple') {
+            createMultipleAnswers(index);
+        } else if (questionSet[index].type == 'boolean') {
+            createBooleanAnswers(index);
+        }
     }
 }
 
-function checkCorrectAnswer(answer){
+const showQuestion = (index) => {
+    // enable back all other question buttons and disable button for current question and show current question
+    $.each(questionSet, function (index, item) {
+        $('#questionList > #question' + index).prop('disabled', false);
+        $('#questionContainer' + index).addClass('hidden');
+    });
+    $('#questionList > #question' + index).prop('disabled', true);
+    $('#questionContainer' + index).removeClass('hidden');
+    // check if it is first or last question to disable nav buttons
+    $('.btn-prev-q').prop('disabled', index == 0);
+    $('.btn-next-q').prop('disabled', index == questionSet.length - 1);
+    // save correct answer
+    currCorrectAns = questionSet[index].correct_answer;
+}
+
+const createMultipleAnswers = (idx) => {
+    // get other answers and add correct to them
+    let answers = [...questionSet[idx].incorrect_answers];
+    answers.push(questionSet[idx].correct_answer);
+    // mix them up
+    shuffleArray(answers);
+    // show answers
+    $.each(answers, function (index, item) {
+        // add Bootstrap structure for each radio answer
+        $('#answersContainer' + idx).append('\
+                <div class="form-check">\
+                    <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '">\
+                    <label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>\
+                </div>');
+        // submit form on clicking one of the radios
+        $('#answersContainer' + idx + ' :radio').on('change', function () {
+            $('#answersContainer' + idx).submit(checkCorrectAnswer(this.value));
+        });
+    });
+}
+
+const createBooleanAnswers = (idx) => {
+    // show answers - add Bootstrap structure for with btn-styled radio
+    $('#answersContainer' + idx).append('\
+        <div class="trueFalseContainer">\
+            <div class="form-check">\
+                <input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off">\
+                <label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>\
+            </div>\
+            <div class="form-check">\
+                <input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off">\
+                <label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>\
+            </div>\
+        </div>');
+    // submit form on clicking one of the radios
+    $('#ansCont' + idx + 'A0,#ansCont' + idx + 'A1').on('change', function () {
+        $('#answersContainer' + idx).submit(checkCorrectAnswer(this.value));
+    });
+}
+
+function checkCorrectAnswer(answer) {
     if (answer == currCorrectAns) {
         // answer is correct, mark the question in the list
         $('#question' + currQIndex).css('color', 'lightgreen');
@@ -127,7 +143,8 @@ function checkCorrectAnswer(answer){
         $('#question' + currQIndex).css('color', 'red');
     }
     // TODO - save the answer and if it was correct to session storage (for later use when going back to question)
-    // TODO - lock the form so response can't be changed
+    // lock the form so responses can't be changed
+    $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
 }
 
 function jumpToQuestion(param) {
@@ -189,7 +206,7 @@ function categoryButtonClicked(param) {
 function difficultyButtonClicked(difficulty) {
     // load 10 questions from selected category of selected difficulty 
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + amountQuestions + '&category=' + selectedCategory + '&difficulty=' + difficulty);
+    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + difficulty);
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
         // TODO - questions only listed now

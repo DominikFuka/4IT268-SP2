@@ -99,8 +99,11 @@ main {
     border-radius: 15px;
 }
 
-.questions>.questionContainer {
+.questions>.quizQuestions {
     flex-basis: 75%;
+}
+
+.questions .questionContainer {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
@@ -108,34 +111,34 @@ main {
     height: 100%;
 }
 
-.questions>.questionContainer>.answersContainer>.form-check {
+.questions .questionContainer>.answersContainer>.form-check {
     font-size: x-large;
     margin: 20px auto;
 }
 
-.questions>.questionContainer>.answersContainer>.trueFalseContainer {
+.questions .questionContainer>.answersContainer>.trueFalseContainer {
     display: flex;
     gap: 25px;
 }
 
-.questions>.questionContainer>.answersContainer>.trueFalseContainer>.form-check {
+.questions .questionContainer>.answersContainer>.trueFalseContainer>.form-check {
     margin: 0px;
     padding: 0px;
 }
 
-.questions>.questionContainer>.answersContainer .btn-answer {
+.questions .questionContainer>.answersContainer .btn-answer {
     font-size: x-large;
     font-weight: normal;
 }
 
-.questions>.questionContainer>.questionNav {
+.questions .questionContainer>.questionNav {
     display: flex;
     justify-content: space-between;
     align-self: stretch;
     padding: 0px 15px;
 }
 
-.questions>.questionContainer>.questionText {
+.questions .questionContainer>.questionText {
     font-size: xx-large;
     font-weight: bolder;
     text-align: center;
