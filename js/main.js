@@ -28,6 +28,9 @@ $(document).ready(() => {
         console.error('XHR error', e);
     });
     xhr.send();
+
+    // TODO remove
+    localStorage.clear();
 });
 
 const initQuiz = (questions) => {
@@ -109,7 +112,7 @@ const createMultipleAnswers = (idx) => {
                     <label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>\
                 </div>');
         // submit form on clicking one of the radios
-        $('#answersContainer' + idx + ' :radio').on('change', function () {
+        $('#answersContainer' + idx + ' input').change(function () {
             $('#answersContainer' + idx).submit(checkCorrectAnswer(this.value));
         });
     });
@@ -129,7 +132,7 @@ const createBooleanAnswers = (idx) => {
             </div>\
         </div>');
     // submit form on clicking one of the radios
-    $('#ansCont' + idx + 'A0,#ansCont' + idx + 'A1').on('change', function () {
+    $('#answersContainer' + idx + ' input').change(function () {
         $('#answersContainer' + idx).submit(checkCorrectAnswer(this.value));
     });
 }
@@ -138,10 +141,30 @@ function checkCorrectAnswer(answer) {
     if (answer == currCorrectAns) {
         // answer is correct, mark the question in the list
         $('#question' + currQIndex).css('color', 'lightgreen');
+        // increase number of correct answers in local storage
+        if (localStorage.getItem('correctAnsCount') != null) {
+            // variable already exists, increase value
+            let count = Number(localStorage.getItem('correctAnsCount')) + 1;
+            // set value
+            localStorage.setItem('correctAnsCount', count);
+        } else {
+            localStorage.setItem('correctAnsCount', '1');
+        }
     } else {
         // answer is wrong, mark the question in the list
         $('#question' + currQIndex).css('color', 'red');
+        // increase number of incorrect answers in local storage
+        if (localStorage.getItem('incorrectAnsCount') != null) {
+            // variable already exists, increase value
+            let count = Number(localStorage.getItem('incorrectAnsCount')) + 1;
+            // set value
+            localStorage.setItem('incorrectAnsCount', count);
+        } else {
+            localStorage.setItem('incorrectAnsCount', '1');
+        }
     }
+    console.log('correct: ' + localStorage.getItem('correctAnsCount'));
+    console.log('incorrect: ' + localStorage.getItem('incorrectAnsCount'));
     // TODO - save the answer and if it was correct to session storage (for later use when going back to question)
     // lock the form so responses can't be changed
     $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
