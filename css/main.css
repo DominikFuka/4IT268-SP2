@@ -87,23 +87,23 @@ main {
     margin: 30px 0px;
 }
 
-.questions {
+.quiz {
     display: flex;
     gap: 15px 15px;
     background-color: transparent;
 }
 
-.questions>* {
+.quiz>* {
     padding: 15px;
     background-color: rgb(24, 24, 24);
     border-radius: 15px;
 }
 
-.questions>.quizQuestions {
+.quiz>.questions {
     flex-basis: 75%;
 }
 
-.questions .questionContainer {
+.quiz .questionContainer {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
@@ -111,34 +111,34 @@ main {
     height: 100%;
 }
 
-.questions .questionContainer>.answersContainer>.form-check {
+.quiz .questionContainer>.answersContainer>.form-check {
     font-size: x-large;
     margin: 20px auto;
 }
 
-.questions .questionContainer>.answersContainer>.trueFalseContainer {
+.quiz .questionContainer>.answersContainer>.trueFalseContainer {
     display: flex;
     gap: 25px;
 }
 
-.questions .questionContainer>.answersContainer>.trueFalseContainer>.form-check {
+.quiz .questionContainer>.answersContainer>.trueFalseContainer>.form-check {
     margin: 0px;
     padding: 0px;
 }
 
-.questions .questionContainer>.answersContainer .btn-answer {
+.quiz .questionContainer>.answersContainer .btn-answer {
     font-size: x-large;
     font-weight: normal;
 }
 
-.questions .questionContainer>.questionNav {
+.quiz .questionContainer>.questionNav {
     display: flex;
     justify-content: space-between;
     align-self: stretch;
     padding: 0px 15px;
 }
 
-.questions .questionContainer>.questionText {
+.quiz .questionContainer>.questionText {
     font-size: xx-large;
     font-weight: bolder;
     text-align: center;
@@ -146,11 +146,11 @@ main {
     margin-bottom: 25px;
 }
 
-.questions>aside {
+.quiz>aside {
     flex-basis: 25%;
 }
 
-.questions>aside>h2 {
+.quiz>aside>h2 {
     margin-bottom: 15px;
 }
 

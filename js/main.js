@@ -34,6 +34,8 @@ $(document).ready(() => {
 });
 
 const initQuiz = (questions) => {
+    // clear quiz questions before generating a new quiz
+    $('#questions').empty();
     // save fetched set of questions to variable
     questionSet = [...questions];
     // create aside quiz navigation with questions
@@ -62,7 +64,7 @@ const createQuizNav = () => {
 const createQuestions = () => {
     for (let index = 0; index < AMOUNT_QUESTIONS; index++) {
         // append question to quiz section
-        $('#quizQuestions').append('\
+        $('#questions').append('\
             <section class="questionContainer" id="questionContainer' + index + '">\
                 <h1>Question #' + (index + 1) + '</h1>\
                 <div class="questionNav">\
@@ -94,7 +96,7 @@ const showQuestion = (index) => {
     $('.btn-prev-q').prop('disabled', index == 0);
     $('.btn-next-q').prop('disabled', index == questionSet.length - 1);
     // save correct answer
-    currCorrectAns = questionSet[index].correct_answer;
+    currCorrectAns = decodeHTML(questionSet[index].correct_answer);
 }
 
 const createMultipleAnswers = (idx) => {
@@ -107,14 +109,10 @@ const createMultipleAnswers = (idx) => {
     $.each(answers, function (index, item) {
         // add Bootstrap structure for each radio answer
         $('#answersContainer' + idx).append('\
-                <div class="form-check">\
-                    <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '">\
-                    <label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>\
-                </div>');
-        // submit form on clicking one of the radios
-        $('#answersContainer' + idx + ' input').change(function () {
-            $('#answersContainer' + idx).submit(checkCorrectAnswer(this.value));
-        });
+            <div class="form-check">\
+                <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkCorrectAnswer(this.value)">\
+                <label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>\
+            </div>');
     });
 }
 
@@ -123,18 +121,14 @@ const createBooleanAnswers = (idx) => {
     $('#answersContainer' + idx).append('\
         <div class="trueFalseContainer">\
             <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off">\
+                <input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkCorrectAnswer(this.value)">\
                 <label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>\
             </div>\
             <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off">\
+                <input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkCorrectAnswer(this.value)">\
                 <label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>\
             </div>\
         </div>');
-    // submit form on clicking one of the radios
-    $('#answersContainer' + idx + ' input').change(function () {
-        $('#answersContainer' + idx).submit(checkCorrectAnswer(this.value));
-    });
 }
 
 function checkCorrectAnswer(answer) {
@@ -199,7 +193,7 @@ function homepageBtnClicked() {
     // show categories selection and hide all other sections
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
-    $('.questions').addClass('hidden');
+    $('.quiz').addClass('hidden');
     // clear question list
     $('#questionList > button').remove();
 }
@@ -232,11 +226,10 @@ function difficultyButtonClicked(difficulty) {
     xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + difficulty);
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
-        // TODO - questions only listed now
         if (data.response_code == '0') {
-            // hide difficulty and show questions container
+            // hide difficulty and show quiz container
             $('.difficulty').addClass('hidden');
-            $('.questions').removeClass('hidden');
+            $('.quiz').removeClass('hidden');
             // initialize quiz
             initQuiz(data.results);
         } else if (data.response_code == '1') {
