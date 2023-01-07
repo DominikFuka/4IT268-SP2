@@ -110,7 +110,7 @@ const createMultipleAnswers = (idx) => {
         // add Bootstrap structure for each radio answer
         $('#answersContainer' + idx).append('\
             <div class="form-check">\
-                <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkCorrectAnswer(this.value)">\
+                <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkAnswer(this.value)">\
                 <label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>\
             </div>');
     });
@@ -121,47 +121,77 @@ const createBooleanAnswers = (idx) => {
     $('#answersContainer' + idx).append('\
         <div class="trueFalseContainer">\
             <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkCorrectAnswer(this.value)">\
+                <input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkAnswer(this.value)">\
                 <label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>\
             </div>\
             <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkCorrectAnswer(this.value)">\
+                <input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkAnswer(this.value)">\
                 <label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>\
             </div>\
         </div>');
 }
 
-function checkCorrectAnswer(answer) {
-    if (answer == currCorrectAns) {
+function checkAnswer(answer) {
+    // lock the form so responses can't be changed
+    $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
+    // check if answer was correct and react accordingly 
+    let isAnsCorrect = answer == currCorrectAns;
+    if (isAnsCorrect) {
         // answer is correct, mark the question in the list
         $('#question' + currQIndex).css('color', 'lightgreen');
         // increase number of correct answers in local storage
-        if (localStorage.getItem('correctAnsCount') != null) {
-            // variable already exists, increase value
-            let count = Number(localStorage.getItem('correctAnsCount')) + 1;
-            // set value
-            localStorage.setItem('correctAnsCount', count);
-        } else {
-            localStorage.setItem('correctAnsCount', '1');
-        }
+        incrCorrectAnsCount();
     } else {
         // answer is wrong, mark the question in the list
         $('#question' + currQIndex).css('color', 'red');
         // increase number of incorrect answers in local storage
-        if (localStorage.getItem('incorrectAnsCount') != null) {
-            // variable already exists, increase value
-            let count = Number(localStorage.getItem('incorrectAnsCount')) + 1;
-            // set value
-            localStorage.setItem('incorrectAnsCount', count);
-        } else {
-            localStorage.setItem('incorrectAnsCount', '1');
-        }
+        incrIncorrectAnsCount();
     }
-    console.log('correct: ' + localStorage.getItem('correctAnsCount'));
-    console.log('incorrect: ' + localStorage.getItem('incorrectAnsCount'));
-    // TODO - save the answer and if it was correct to session storage (for later use when going back to question)
-    // lock the form so responses can't be changed
-    $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
+    // show popup above answers and hide it shortly after
+    resultPopup(isAnsCorrect);
+    // TODO option to show correct answer for incorrectly answered questions
+}
+
+const incrCorrectAnsCount = () => {
+    if (localStorage.getItem('correctAnsCount') != null) {
+        // variable already exists, increase value
+        let count = Number(localStorage.getItem('correctAnsCount')) + 1;
+        // set value
+        localStorage.setItem('correctAnsCount', count);
+    } else {
+        localStorage.setItem('correctAnsCount', '1');
+    }
+}
+
+const incrIncorrectAnsCount = () => {
+    if (localStorage.getItem('incorrectAnsCount') != null) {
+        // variable already exists, increase value
+        let count = Number(localStorage.getItem('incorrectAnsCount')) + 1;
+        // set value
+        localStorage.setItem('incorrectAnsCount', count);
+    } else {
+        localStorage.setItem('incorrectAnsCount', '1');
+    }
+}
+
+const resultPopup = (result) => {
+    // alert div using Bootstrap
+    let resultMsg = $('<div class="alert resultPopup"></div>');
+    if (result) {
+        resultMsg.text('CORRECT!');
+        resultMsg.addClass('alert-success');
+    } else {
+        resultMsg.text('INCORRECT');
+        resultMsg.addClass('alert-danger');
+    }
+    $('#answersContainer' + currQIndex).before(resultMsg);
+    $('.resultPopup').alert();
+    // slide up closing animation for alert after 1.5 sec
+    window.setTimeout(function () {
+        $('.resultPopup').slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 1500);
 }
 
 function jumpToQuestion(param) {
