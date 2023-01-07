@@ -104,7 +104,7 @@ const createMultipleAnswers = (idx) => {
     let answers = [...questionSet[idx].incorrect_answers];
     answers.push(questionSet[idx].correct_answer);
     // mix them up
-    shuffleArray(answers);
+    shuffleAnswers(answers);
     // show answers
     $.each(answers, function (index, item) {
         // add Bootstrap structure for each radio answer
@@ -180,10 +180,11 @@ function decodeHTML(text) {
     return textField.value;
 }
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+/** Source: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
+function shuffleAnswers(answerArray) {
+    for (let i = answerArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+        [answerArray[i], answerArray[j]] = [answerArray[j], answerArray[i]];
     }
 }
 
