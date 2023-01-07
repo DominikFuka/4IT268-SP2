@@ -20,7 +20,7 @@ h2 {
 
 .btn {
     text-transform: uppercase;
-    font-size: 1.25rem;
+    font-size: larger;
     font-weight: bold;
     padding: 15px;
 }
@@ -87,27 +87,71 @@ main {
     margin: 30px 0px;
 }
 
-.questions {
+.quiz {
     display: flex;
     gap: 15px 15px;
     background-color: transparent;
 }
 
-.questions>* {
+.quiz>* {
     padding: 15px;
     background-color: rgb(24, 24, 24);
     border-radius: 15px;
 }
 
-.questions>.questionContainer {
+.quiz>.questions {
     flex-basis: 75%;
 }
 
-.questions>aside {
+.quiz .questionContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: center;
+    height: 100%;
+}
+
+.quiz .questionContainer>.answersContainer>.form-check {
+    font-size: x-large;
+    margin: 20px auto;
+}
+
+.quiz .questionContainer>.answersContainer>.trueFalseContainer {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+}
+
+.quiz .questionContainer>.answersContainer>.trueFalseContainer>.form-check {
+    margin: 0px;
+    padding: 0px;
+}
+
+.quiz .questionContainer>.answersContainer .btn-answer {
+    font-size: x-large;
+    font-weight: normal;
+}
+
+.quiz .questionContainer>.questionNav {
+    display: flex;
+    justify-content: space-between;
+    align-self: stretch;
+    padding: 0px 15px;
+}
+
+.quiz .questionContainer>.questionText {
+    font-size: xx-large;
+    font-weight: bolder;
+    text-align: center;
+    padding: 20px 20px 0px 20px;
+    margin-bottom: 25px;
+}
+
+.quiz>aside {
     flex-basis: 25%;
 }
 
-.questions>aside>h2 {
+.quiz>aside>h2 {
     margin-bottom: 15px;
 }
 
@@ -118,14 +162,16 @@ main {
     padding: 10px;
 }
 
-.questionNav {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
+.resultPopup {
+    font-size: x-large;
+    font-weight: bolder;
 }
 
-.questionText {
-    font-size: xx-large;
-    text-align: center;
-    padding: 20px;
+.correctAndBtn {
+    margin-top: 15px;
+}
+
+.correctAnsPopup {
+    font-size: x-large;
+    margin-top: 15px;
 }
