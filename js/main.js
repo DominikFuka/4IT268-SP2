@@ -3,7 +3,6 @@ const AMOUNT_QUESTIONS = '10';
 var selectedCategory;
 var questionSet;
 var currQIndex = 0;
-var currCorrectAns;
 
 $(document).ready(() => {
     // show categories as buttons when site loads
@@ -95,8 +94,6 @@ const showQuestion = (index) => {
     // check if it is first or last question to disable nav buttons
     $('.btn-prev-q').prop('disabled', index == 0);
     $('.btn-next-q').prop('disabled', index == questionSet.length - 1);
-    // save correct answer
-    currCorrectAns = decodeHTML(questionSet[index].correct_answer);
 }
 
 const createMultipleAnswers = (idx) => {
@@ -135,7 +132,7 @@ function checkAnswer(answer) {
     // lock the form so responses can't be changed
     $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
     // check if answer was correct and react accordingly 
-    let isAnsCorrect = answer == currCorrectAns;
+    let isAnsCorrect = (answer == decodeHTML(questionSet[currQIndex].correct_answer));
     if (isAnsCorrect) {
         // answer is correct, mark the question in the list
         $('#question' + currQIndex).css('color', 'lightgreen');
@@ -150,6 +147,9 @@ function checkAnswer(answer) {
     // show popup above answers and hide it shortly after
     resultPopup(isAnsCorrect);
     // TODO option to show correct answer for incorrectly answered questions
+    if (!isAnsCorrect) {
+        createCorrectAnsBtn();
+    }
 }
 
 const incrCorrectAnsCount = () => {
@@ -194,6 +194,13 @@ const resultPopup = (result) => {
     }, 1500);
 }
 
+const createCorrectAnsBtn = () => {
+    // show button for correct answer
+    let ansBtn = $('<button id="showAnsBtn' + currQIndex + '" type="button" class="btn btn-info correctAndBtn" onclick="showAnsBtnClick()">Show correct answer</button>')
+    // append behind answers
+    $('#answersContainer' + currQIndex).after(ansBtn);
+}
+
 function jumpToQuestion(param) {
     // update current index
     currQIndex = param.data.goToIdx;
@@ -219,6 +226,15 @@ function shuffleAnswers(answerArray) {
 }
 
 /* --- ONCLICK FUNCTIONS --- */
+
+function showAnsBtnClick() {
+    // remove button that was clicked
+    $('#showAnsBtn' + currQIndex).remove();
+    // create alert div with correct answer
+    let correctAnsAlert = $('<div class="alert alert-info correctAnsPopup">Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b></div>');
+    // attach it behind answers
+    $('#answersContainer' + currQIndex).after(correctAnsAlert);
+}
 
 function homepageBtnClicked() {
     // show categories selection and hide all other sections

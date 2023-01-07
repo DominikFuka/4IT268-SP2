@@ -119,6 +119,7 @@ main {
 .quiz .questionContainer>.answersContainer>.trueFalseContainer {
     display: flex;
     gap: 25px;
+    margin-bottom: 15px;
 }
 
 .quiz .questionContainer>.answersContainer>.trueFalseContainer>.form-check {
@@ -164,4 +165,13 @@ main {
 .resultPopup {
     font-size: x-large;
     font-weight: bolder;
+}
+
+.correctAndBtn {
+    margin-top: 15px;
+}
+
+.correctAnsPopup {
+    font-size: x-large;
+    margin-top: 15px;
 }
