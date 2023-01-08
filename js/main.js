@@ -30,7 +30,7 @@ $(document).ready(() => {
     xhr.send();
 
     // TODO remove
-    localStorage.clear();
+    //localStorage.clear();
 });
 
 const initQuiz = (questions) => {
@@ -58,10 +58,13 @@ const finishQuiz = () => {
     $('#selCat').append($('#' + selectedCategory).text());
     $('#selDiff').append(selectedDifficulty);
     $('#qCount').append(AMOUNT_QUESTIONS);
+    
     $('#corrAnsCount').text();
     $('#incorrAnsCount').text();
     $('#corrAnsPercQuiz').text();
-    $('#corrAnsPercOverall').text();
+
+    let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
+    $('#corrAnsPercOverall').text(overallPercent + '%');
     // TODO create button to show end screen in quiz nav above questions (with back to quiz button)
     // open modal with congratulations (Bootstrap)
     $('#congratsModal').modal('show');
@@ -177,7 +180,7 @@ function checkAnswer(answer) {
     let ansCount = Number(sessionStorage.getItem('answeredCount')) + 1;
     sessionStorage.setItem('answeredCount', ansCount);
     // check if all was answered
-    if (sessionStorage.getItem('answeredCount') == /*AMOUNT_QUESTIONS*/'1') {
+    if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
         finishQuiz();
     }
 }
