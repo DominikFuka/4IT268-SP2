@@ -35,6 +35,8 @@ $(document).ready(() => {
 const initQuiz = (questions) => {
     // clear quiz questions before generating a new quiz
     $('#questions').empty();
+    // setup session storage variable to keep track of how many questions were answered
+    sessionStorage.setItem('answeredCount', '0');
     // save fetched set of questions to variable
     questionSet = [...questions];
     // create aside quiz navigation with questions
@@ -44,6 +46,13 @@ const initQuiz = (questions) => {
     // show first question
     currQIndex = 0;
     showQuestion(currQIndex);
+}
+
+const finishQuiz = () => {
+    // TODO generate hidden end result screen
+    // TODO create button to show end screen in quiz nav above questions (with back to quiz button)
+    // open modal with congratulations (Bootstrap)
+    $('#congratsModal').modal('show');
 }
 
 const createQuizNav = () => {
@@ -146,9 +155,18 @@ function checkAnswer(answer) {
     }
     // show popup above answers and hide it shortly after
     resultPopup(isAnsCorrect);
-    // TODO option to show correct answer for incorrectly answered questions
+
+    // option to show correct answer for incorrectly answered questions
     if (!isAnsCorrect) {
         createCorrectAnsBtn();
+    }
+
+    // increase answered questions count in session storage
+    let ansCount = Number(sessionStorage.getItem('answeredCount')) + 1;
+    sessionStorage.setItem('answeredCount', ansCount);
+    // check if all was answered
+    if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
+        finishQuiz();
     }
 }
 

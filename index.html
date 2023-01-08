@@ -23,6 +23,22 @@
         </nav>
     </header>
     <main>
+        <div class="modal fade" id="congratsModal" tabindex="-1" role="dialog" aria-labelledby="congratsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="congratsModalLabel">Congratulations!</h2>
+                    </div>
+                    <div class="modal-body">
+                        You have successfully finished this quiz. What would you like to do next?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Back to questions</button>
+                        <button type="button" class="btn btn-primary" onclick="">Show results</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <section class="sectionWrapper categories">
             <h1>Categories</h1>
             <div class="categoriesContainer"></div>
