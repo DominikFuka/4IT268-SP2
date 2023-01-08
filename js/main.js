@@ -72,7 +72,7 @@ const finishQuiz = () => {
     
     // create button to show result screen in quiz nav above questions
     $('#questionList').prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
-    
+
     // open modal with congratulations (Bootstrap)
     $('#congratsModal').modal('show');
 }
@@ -274,6 +274,25 @@ function shuffleAnswers(answerArray) {
 }
 
 /* --- ONCLICK FUNCTIONS --- */
+
+function newQuizSameSettingsBtnClick() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + selectedDifficulty);
+    xhr.addEventListener('load', () => {
+        const data = JSON.parse(xhr.responseText);
+        if (data.response_code == '0') {
+            // hide result screen and show quiz container
+            $('.resultScreen').addClass('hidden');
+            $('.quiz').removeClass('hidden');
+            // initialize quiz
+            initQuiz(data.results);
+        }
+    });
+    xhr.addEventListener('error', function (e) {
+        console.error('XHR error', e);
+    });
+    xhr.send();
+}
 
 function hideResultScreen() {
     // hide result screen and go back to quiz
