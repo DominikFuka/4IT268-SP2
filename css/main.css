@@ -175,3 +175,53 @@ main {
     font-size: x-large;
     margin-top: 15px;
 }
+
+.modal:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.modal {
+    text-align: center;
+}
+
+.modal .modal-content {
+    border-radius: 20px;
+}
+
+.modal .modal-dialog {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.modal .modal-header {
+    background-color: rgb(50, 50, 50);
+    border: none;
+}
+
+.modal .modal-title {
+    margin: 15px auto;
+    text-transform: uppercase;
+}
+
+.modal .modal-body {
+    background-color: rgb(50, 50, 50);
+    color: white;
+    font-size: larger;
+    padding: 0px 20px;
+}
+
+.modal .modal-body p:last-child {
+    margin-bottom: 0px;
+    padding-top: 15px;
+    text-transform: uppercase;
+}
+
+.modal .modal-footer {
+    justify-content: center;
+    background-color: rgb(50, 50, 50);
+    border: none;
+    padding: 10px 20px 20px 20px;
+}
