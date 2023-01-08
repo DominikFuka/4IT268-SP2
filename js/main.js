@@ -1,7 +1,8 @@
 const AMOUNT_QUESTIONS = '10';
+var questionSet;
 
 var selectedCategory;
-var questionSet;
+var selectedDifficulty;
 var currQIndex = 0;
 
 $(document).ready(() => {
@@ -35,6 +36,8 @@ $(document).ready(() => {
 const initQuiz = (questions) => {
     // clear quiz questions before generating a new quiz
     $('#questions').empty();
+    // clear question list
+    $('#questionList > button').remove();
     // setup session storage variable to keep track of how many questions were answered
     sessionStorage.setItem('answeredCount', '0');
     // save fetched set of questions to variable
@@ -49,7 +52,16 @@ const initQuiz = (questions) => {
 }
 
 const finishQuiz = () => {
-    // TODO generate hidden end result screen
+    // clear data from result screen
+    $('.resultScreen span').empty();
+    // TODO generate data in hidden end result screen
+    $('#selCat').append($('#' + selectedCategory).text());
+    $('#selDiff').append(selectedDifficulty);
+    $('#qCount').append(AMOUNT_QUESTIONS);
+    $('#corrAnsCount').text();
+    $('#incorrAnsCount').text();
+    $('#corrAnsPercQuiz').text();
+    $('#corrAnsPercOverall').text();
     // TODO create button to show end screen in quiz nav above questions (with back to quiz button)
     // open modal with congratulations (Bootstrap)
     $('#congratsModal').modal('show');
@@ -165,7 +177,7 @@ function checkAnswer(answer) {
     let ansCount = Number(sessionStorage.getItem('answeredCount')) + 1;
     sessionStorage.setItem('answeredCount', ansCount);
     // check if all was answered
-    if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
+    if (sessionStorage.getItem('answeredCount') == /*AMOUNT_QUESTIONS*/'1') {
         finishQuiz();
     }
 }
@@ -226,6 +238,10 @@ function jumpToQuestion(param) {
     showQuestion(currQIndex);
 }
 
+const hideCongratsModal = () => {
+    $('#congratsModal').modal('hide');
+}
+
 /* --- HELPER FUNCTIONS --- */
 
 function decodeHTML(text) {
@@ -245,6 +261,14 @@ function shuffleAnswers(answerArray) {
 
 /* --- ONCLICK FUNCTIONS --- */
 
+function showResultScreenBtnClick() {
+    // hide modal
+    hideCongratsModal();
+    // show result screen
+    $('.quiz').addClass('hidden');
+    $('.resultScreen').removeClass('hidden');
+}
+
 function showAnsBtnClick() {
     // remove button that was clicked
     $('#showAnsBtn' + currQIndex).remove();
@@ -259,8 +283,7 @@ function homepageBtnClicked() {
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
     $('.quiz').addClass('hidden');
-    // clear question list
-    $('#questionList > button').remove();
+    $('.resultScreen').addClass('hidden');
 }
 
 function prevQBtnClicked(btnId) {
@@ -286,7 +309,9 @@ function categoryButtonClicked(param) {
 }
 
 function difficultyButtonClicked(difficulty) {
-    // load 10 questions from selected category of selected difficulty 
+    // set selected difficulty for result screen
+    selectedDifficulty = difficulty;
+    // load questions from selected category of selected difficulty 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + difficulty);
     xhr.addEventListener('load', () => {

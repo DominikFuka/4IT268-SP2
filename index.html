@@ -37,8 +37,8 @@
                         <p><b>What would you like to do next?</b></p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="$('#congratsModal').modal('hide');">Back to questions</button>
-                        <button type="button" class="btn btn-warning" onclick="">Show results</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="hideCongratsModal()">Back to questions</button>
+                        <button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>
                     </div>
                 </div>
             </div>
@@ -65,6 +65,16 @@
                 <h2>Question list</h2>
                 <div id="questionList" class="questionList"></div>
             </aside>
+        </section>
+        <section class="sectionWrapper resultScreen hidden">
+            <h1>Quiz results</h1>
+            <p>Selected category: <span id="selCat"></span></p>
+            <p>Selected difficulty: <span id="selDiff"></span></p>
+            <p>Number of questions: <span id="qCount"></span></p>
+            <p id="corrAnsCount"></p>
+            <p id="incorrAnsCount"></p>
+            <p id="corrAnsPercQuiz"></p>
+            <p id="corrAnsPercOverall"></p>
         </section>
     </main>
     <footer>2022 &copy; Dominik Fuka</footer>
