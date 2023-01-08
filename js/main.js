@@ -55,7 +55,7 @@ const initQuiz = (questions) => {
 const finishQuiz = () => {
     // clear data from result screen
     $('.resultScreen span').empty();
-    // TODO generate data in hidden end result screen
+    // generate data in hidden end result screen
     $('#selCat').append($('#' + selectedCategory).text());
     $('#selDiff').append(selectedDifficulty);
     $('#qCount').append(AMOUNT_QUESTIONS);
@@ -69,7 +69,10 @@ const finishQuiz = () => {
     let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
     overallPercent = Math.round((overallPercent + Number.EPSILON) * 100) / 100;
     $('#corrAnsPercOverall').append(overallPercent + '%');
-    // TODO create button to show end screen in quiz nav above questions (with back to quiz button)
+    
+    // create button to show result screen in quiz nav above questions
+    $('#questionList').prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
+    
     // open modal with congratulations (Bootstrap)
     $('#congratsModal').modal('show');
 }
@@ -271,6 +274,12 @@ function shuffleAnswers(answerArray) {
 }
 
 /* --- ONCLICK FUNCTIONS --- */
+
+function hideResultScreen() {
+    // hide result screen and go back to quiz
+    $('.resultScreen').addClass('hidden');
+    $('.quiz').removeClass('hidden');
+}
 
 function showResultScreenBtnClick() {
     // hide modal
