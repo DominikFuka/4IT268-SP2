@@ -34,12 +34,13 @@ $(document).ready(() => {
 });
 
 const initQuiz = (questions) => {
-    // clear quiz questions before generating a new quiz
+    // clear quiz questions and question list before generating a new quiz
     $('#questions').empty();
-    // clear question list
     $('#questionList > button').remove();
-    // setup session storage variable to keep track of how many questions were answered
+    // setup session storage variable to keep track of how many questions were answered and how many correctly
     sessionStorage.setItem('answeredCount', '0');
+    sessionStorage.setItem('quizCorrectCount', '0');
+    console.log(sessionStorage.getItem('quizCorrectCount'));
     // save fetched set of questions to variable
     questionSet = [...questions];
     // create aside quiz navigation with questions
@@ -58,13 +59,16 @@ const finishQuiz = () => {
     $('#selCat').append($('#' + selectedCategory).text());
     $('#selDiff').append(selectedDifficulty);
     $('#qCount').append(AMOUNT_QUESTIONS);
-    
-    $('#corrAnsCount').text();
-    $('#incorrAnsCount').text();
-    $('#corrAnsPercQuiz').text();
+
+    $('#corrAnsCount').append(sessionStorage.getItem('quizCorrectCount'));
+    $('#incorrAnsCount').append(Number(AMOUNT_QUESTIONS) - Number(sessionStorage.getItem('quizCorrectCount')));
+    let quizPercent = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / Number(AMOUNT_QUESTIONS);
+    quizPercent = Math.round((quizPercent + Number.EPSILON) * 100) / 100;
+    $('#corrAnsPercQuiz').append(quizPercent + '%');
 
     let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
-    $('#corrAnsPercOverall').text(overallPercent + '%');
+    overallPercent = Math.round((overallPercent + Number.EPSILON) * 100) / 100;
+    $('#corrAnsPercOverall').append(overallPercent + '%');
     // TODO create button to show end screen in quiz nav above questions (with back to quiz button)
     // open modal with congratulations (Bootstrap)
     $('#congratsModal').modal('show');
@@ -186,6 +190,7 @@ function checkAnswer(answer) {
 }
 
 const incrCorrectAnsCount = () => {
+    // local storage variable for overall count
     if (localStorage.getItem('correctAnsCount') != null) {
         // variable already exists, increase value
         let count = Number(localStorage.getItem('correctAnsCount')) + 1;
@@ -194,6 +199,9 @@ const incrCorrectAnsCount = () => {
     } else {
         localStorage.setItem('correctAnsCount', '1');
     }
+    // session storage variable for current quiz - already set to 0 in initQuiz
+    let quizCount = Number(sessionStorage.getItem('quizCorrectCount')) + 1;
+    sessionStorage.setItem('quizCorrectCount', quizCount);
 }
 
 const incrIncorrectAnsCount = () => {
