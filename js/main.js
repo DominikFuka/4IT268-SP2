@@ -154,7 +154,7 @@ function checkAnswer(answer) {
         incrIncorrectAnsCount();
     }
     // show popup above answers and hide it shortly after
-    resultPopup(isAnsCorrect);
+    ansResultPopup(isAnsCorrect);
 
     // option to show correct answer for incorrectly answered questions
     if (!isAnsCorrect) {
@@ -192,7 +192,7 @@ const incrIncorrectAnsCount = () => {
     }
 }
 
-const resultPopup = (result) => {
+const ansResultPopup = (result) => {
     // alert div using Bootstrap
     let resultMsg = $('<div class="alert resultPopup"></div>');
     if (result) {
