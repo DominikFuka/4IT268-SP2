@@ -29,8 +29,8 @@ $(document).ready(() => {
     });
     xhr.send();
 
-    // TODO remove
-    //localStorage.clear();
+    // disable homepage btn to show current page
+    $('#homepageBtn').prop('disabled', true);
 });
 
 const initQuiz = (questions) => {
@@ -64,12 +64,12 @@ const finishQuiz = () => {
     $('#incorrAnsCount').append(Number(AMOUNT_QUESTIONS) - Number(sessionStorage.getItem('quizCorrectCount')));
     let quizPercent = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / Number(AMOUNT_QUESTIONS);
     quizPercent = Math.round((quizPercent + Number.EPSILON) * 100) / 100;
-    $('#corrAnsPercQuiz').append(quizPercent + '%');
+    $('#corrAnsPercQuiz').append(quizPercent + ' %');
 
     let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
     overallPercent = Math.round((overallPercent + Number.EPSILON) * 100) / 100;
-    $('#corrAnsPercOverall').append(overallPercent + '%');
-    
+    $('#corrAnsPercOverall').append(overallPercent + ' %');
+
     // create button to show result screen in quiz nav above questions
     $('#questionList').prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
 
@@ -323,6 +323,8 @@ function homepageBtnClicked() {
     $('.difficulty').addClass('hidden')
     $('.quiz').addClass('hidden');
     $('.resultScreen').addClass('hidden');
+    // disable homepage btn to mark current page
+    $('#homepageBtn').prop('disabled', true);
 }
 
 function prevQBtnClicked(btnId) {
@@ -345,6 +347,8 @@ function categoryButtonClicked(param) {
     // show difficulty selection
     $('.categories').addClass('hidden');
     $('.difficulty').removeClass('hidden');
+    // enable homepage btn since homepage is no longer current visible page
+    $('#homepageBtn').prop('disabled', false);
 }
 
 function difficultyButtonClicked(difficulty) {

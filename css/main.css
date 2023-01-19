@@ -225,3 +225,74 @@ main {
     border: none;
     padding: 10px 20px 20px 20px;
 }
+
+.resultScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stats {
+    font-size: x-large;
+    margin: 20px auto;
+    color: white;
+}
+
+.table tr>* {
+    border-color: rgb(80, 80, 80);
+}
+
+.table tr:last-child>* {
+    border-style: none;
+}
+
+.table tr:hover {
+    background-color: rgb(15, 15, 15);
+}
+
+.table tr:last-child>th {
+    border-bottom-left-radius: 10px;
+}
+
+.table tr:last-child>td {
+    border-bottom-right-radius: 10px;
+}
+
+.table tr:first-child>th {
+    border-top-left-radius: 10px;
+}
+
+.table tr:first-child>td {
+    border-top-right-radius: 10px;
+}
+
+.stats-header {
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.stats-value {
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+}
+
+.stats .corrAnsCount {
+    color: lightgreen;
+}
+
+.stats .incorrAnsCount {
+    color: red;
+}
+
+.resultScreenNav {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+}
+
+.resultScreenNav>div {
+    display: flex;
+    gap: 20px;
+}
