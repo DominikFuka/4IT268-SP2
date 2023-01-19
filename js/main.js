@@ -1,7 +1,8 @@
 const AMOUNT_QUESTIONS = '10';
+var questionSet;
 
 var selectedCategory;
-var questionSet;
+var selectedDifficulty;
 var currQIndex = 0;
 
 $(document).ready(() => {
@@ -28,13 +29,18 @@ $(document).ready(() => {
     });
     xhr.send();
 
-    // TODO remove
-    localStorage.clear();
+    // disable homepage btn to show current page
+    $('#homepageBtn').prop('disabled', true);
 });
 
 const initQuiz = (questions) => {
-    // clear quiz questions before generating a new quiz
+    // clear quiz questions and question list before generating a new quiz
     $('#questions').empty();
+    $('#questionList > button').remove();
+    // setup session storage variable to keep track of how many questions were answered and how many correctly
+    sessionStorage.setItem('answeredCount', '0');
+    sessionStorage.setItem('quizCorrectCount', '0');
+    console.log(sessionStorage.getItem('quizCorrectCount'));
     // save fetched set of questions to variable
     questionSet = [...questions];
     // create aside quiz navigation with questions
@@ -44,6 +50,31 @@ const initQuiz = (questions) => {
     // show first question
     currQIndex = 0;
     showQuestion(currQIndex);
+}
+
+const finishQuiz = () => {
+    // clear data from result screen
+    $('.resultScreen span').empty();
+    // generate data in hidden end result screen
+    $('#selCat').append($('#' + selectedCategory).text());
+    $('#selDiff').append(selectedDifficulty);
+    $('#qCount').append(AMOUNT_QUESTIONS);
+
+    $('#corrAnsCount').append(sessionStorage.getItem('quizCorrectCount'));
+    $('#incorrAnsCount').append(Number(AMOUNT_QUESTIONS) - Number(sessionStorage.getItem('quizCorrectCount')));
+    let quizPercent = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / Number(AMOUNT_QUESTIONS);
+    quizPercent = Math.round((quizPercent + Number.EPSILON) * 100) / 100;
+    $('#corrAnsPercQuiz').append(quizPercent + ' %');
+
+    let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
+    overallPercent = Math.round((overallPercent + Number.EPSILON) * 100) / 100;
+    $('#corrAnsPercOverall').append(overallPercent + ' %');
+
+    // create button to show result screen in quiz nav above questions
+    $('#questionList').prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
+
+    // open modal with congratulations (Bootstrap)
+    $('#congratsModal').modal('show');
 }
 
 const createQuizNav = () => {
@@ -145,14 +176,24 @@ function checkAnswer(answer) {
         incrIncorrectAnsCount();
     }
     // show popup above answers and hide it shortly after
-    resultPopup(isAnsCorrect);
-    // TODO option to show correct answer for incorrectly answered questions
+    ansResultPopup(isAnsCorrect);
+
+    // option to show correct answer for incorrectly answered questions
     if (!isAnsCorrect) {
         createCorrectAnsBtn();
+    }
+
+    // increase answered questions count in session storage
+    let ansCount = Number(sessionStorage.getItem('answeredCount')) + 1;
+    sessionStorage.setItem('answeredCount', ansCount);
+    // check if all was answered
+    if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
+        finishQuiz();
     }
 }
 
 const incrCorrectAnsCount = () => {
+    // local storage variable for overall count
     if (localStorage.getItem('correctAnsCount') != null) {
         // variable already exists, increase value
         let count = Number(localStorage.getItem('correctAnsCount')) + 1;
@@ -161,6 +202,9 @@ const incrCorrectAnsCount = () => {
     } else {
         localStorage.setItem('correctAnsCount', '1');
     }
+    // session storage variable for current quiz - already set to 0 in initQuiz
+    let quizCount = Number(sessionStorage.getItem('quizCorrectCount')) + 1;
+    sessionStorage.setItem('quizCorrectCount', quizCount);
 }
 
 const incrIncorrectAnsCount = () => {
@@ -174,7 +218,7 @@ const incrIncorrectAnsCount = () => {
     }
 }
 
-const resultPopup = (result) => {
+const ansResultPopup = (result) => {
     // alert div using Bootstrap
     let resultMsg = $('<div class="alert resultPopup"></div>');
     if (result) {
@@ -208,6 +252,10 @@ function jumpToQuestion(param) {
     showQuestion(currQIndex);
 }
 
+const hideCongratsModal = () => {
+    $('#congratsModal').modal('hide');
+}
+
 /* --- HELPER FUNCTIONS --- */
 
 function decodeHTML(text) {
@@ -227,6 +275,39 @@ function shuffleAnswers(answerArray) {
 
 /* --- ONCLICK FUNCTIONS --- */
 
+function newQuizSameSettingsBtnClick() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + selectedDifficulty);
+    xhr.addEventListener('load', () => {
+        const data = JSON.parse(xhr.responseText);
+        if (data.response_code == '0') {
+            // hide result screen and show quiz container
+            $('.resultScreen').addClass('hidden');
+            $('.quiz').removeClass('hidden');
+            // initialize quiz
+            initQuiz(data.results);
+        }
+    });
+    xhr.addEventListener('error', function (e) {
+        console.error('XHR error', e);
+    });
+    xhr.send();
+}
+
+function hideResultScreen() {
+    // hide result screen and go back to quiz
+    $('.resultScreen').addClass('hidden');
+    $('.quiz').removeClass('hidden');
+}
+
+function showResultScreenBtnClick() {
+    // hide modal
+    hideCongratsModal();
+    // show result screen
+    $('.quiz').addClass('hidden');
+    $('.resultScreen').removeClass('hidden');
+}
+
 function showAnsBtnClick() {
     // remove button that was clicked
     $('#showAnsBtn' + currQIndex).remove();
@@ -241,8 +322,9 @@ function homepageBtnClicked() {
     $('.categories').removeClass('hidden');
     $('.difficulty').addClass('hidden')
     $('.quiz').addClass('hidden');
-    // clear question list
-    $('#questionList > button').remove();
+    $('.resultScreen').addClass('hidden');
+    // disable homepage btn to mark current page
+    $('#homepageBtn').prop('disabled', true);
 }
 
 function prevQBtnClicked(btnId) {
@@ -265,10 +347,14 @@ function categoryButtonClicked(param) {
     // show difficulty selection
     $('.categories').addClass('hidden');
     $('.difficulty').removeClass('hidden');
+    // enable homepage btn since homepage is no longer current visible page
+    $('#homepageBtn').prop('disabled', false);
 }
 
 function difficultyButtonClicked(difficulty) {
-    // load 10 questions from selected category of selected difficulty 
+    // set selected difficulty for result screen
+    selectedDifficulty = difficulty;
+    // load questions from selected category of selected difficulty 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + difficulty);
     xhr.addEventListener('load', () => {
