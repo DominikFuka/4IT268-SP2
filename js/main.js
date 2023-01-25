@@ -190,6 +190,21 @@ function checkAnswer(answer) {
     if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
         finishQuiz();
     }
+
+    // update success ratio
+    showQuizSuccessRatio();
+}
+
+const showQuizSuccessRatio = () => {
+    // calculate success ratio
+    let ansCount = Number(sessionStorage.getItem('answeredCount'));
+    if (ansCount == 0) {
+        // TODO set text to gray color
+    } else {
+        let ratio = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / ansCount;
+        $('#quizSuccessRatio').text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
+        // TODO set text color according to score
+    }
 }
 
 const incrCorrectAnsCount = () => {
