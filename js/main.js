@@ -89,6 +89,9 @@ const createQuizNav = () => {
         $('#question' + index).addClass('btn btn-dark');
         $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
+
+    // update success ratio
+    showQuizSuccessRatio();
 }
 
 const createQuestions = () => {
@@ -198,7 +201,11 @@ function checkAnswer(answer) {
 const showQuizSuccessRatio = () => {
     // calculate success ratio
     let ansCount = Number(sessionStorage.getItem('answeredCount'));
-    if (ansCount != 0) {
+    if (ansCount == 0) {
+        // reset quiz ratio text
+        $('#quizSuccessRatio').text('Answer question for success rate');
+        $('#quizSuccessRatio').css('color', 'gray');
+    } else {
         // show ratio rounded to two decimals
         let ratio = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / ansCount;
         $('#quizSuccessRatio').text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
