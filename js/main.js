@@ -198,12 +198,18 @@ function checkAnswer(answer) {
 const showQuizSuccessRatio = () => {
     // calculate success ratio
     let ansCount = Number(sessionStorage.getItem('answeredCount'));
-    if (ansCount == 0) {
-        // TODO set text to gray color
-    } else {
+    if (ansCount != 0) {
+        // show ratio rounded to two decimals
         let ratio = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / ansCount;
         $('#quizSuccessRatio').text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
-        // TODO set text color according to score
+        // set text color according to score
+        if (ratio >= 80) {
+            $('#quizSuccessRatio').css('color', 'lightgreen');
+        } else if (ratio < 80 && ratio >= 50) {
+            $('#quizSuccessRatio').css('color', 'orange');
+        } else {
+            $('#quizSuccessRatio').css('color', 'red');
+        }
     }
 }
 
