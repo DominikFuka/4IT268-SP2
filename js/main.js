@@ -7,6 +7,13 @@ var currQIndex = 0;
 
 $(document).ready(() => {
     // show categories as buttons when site loads
+    createCategories();
+
+    // disable homepage btn to show current page
+    $('#homepageBtn').prop('disabled', true);
+});
+
+const createCategories = () => {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://opentdb.com/api_category.php');
     xhr.addEventListener('load', () => {
@@ -23,15 +30,21 @@ $(document).ready(() => {
             $('#' + item.id).addClass('btn btn-warning');
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
+        // create button for mix of questions from all categories
+        var mixCatButton = $('<button/>',
+            {
+                text: 'Mix of all categories',
+                id: 'mixed'
+            });
+        $('.categoriesContainer').append(mixCatButton);
+        $('#mixed').addClass('btn btn-warning');
+        $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
     });
     xhr.addEventListener('error', function (e) {
         console.error('XHR error', e);
     });
     xhr.send();
-
-    // disable homepage btn to show current page
-    $('#homepageBtn').prop('disabled', true);
-});
+}
 
 const initQuiz = (questions) => {
     // clear quiz questions and question list before generating a new quiz
@@ -40,7 +53,6 @@ const initQuiz = (questions) => {
     // setup session storage variable to keep track of how many questions were answered and how many correctly
     sessionStorage.setItem('answeredCount', '0');
     sessionStorage.setItem('quizCorrectCount', '0');
-    console.log(sessionStorage.getItem('quizCorrectCount'));
     // save fetched set of questions to variable
     questionSet = [...questions];
     // create aside quiz navigation with questions
@@ -384,7 +396,7 @@ function difficultyButtonClicked(difficulty) {
     selectedDifficulty = difficulty;
     // load questions from selected category of selected difficulty 
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + difficulty);
+    xhr.open('GET', getQueryURL());
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
         if (data.response_code == '0') {
@@ -411,4 +423,22 @@ function difficultyButtonClicked(difficulty) {
         console.error('XHR error', e);
     });
     xhr.send();
+}
+
+const getQueryURL = () => {
+    // create pieces for API query
+    var queryBase = 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS;
+    if (selectedCategory !== 'mixed') {
+        var queryCategory = '&category=' + selectedCategory;
+    }
+    var queryDifficulty = '&difficulty=' + selectedDifficulty;
+
+    // create whole URL from pieces
+    var query;
+    if (queryCategory) {
+        query = queryBase.concat(queryCategory, queryDifficulty);
+    } else {
+        query = queryBase.concat(queryDifficulty);
+    }
+    return query;
 }
