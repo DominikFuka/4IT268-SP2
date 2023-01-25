@@ -10,7 +10,8 @@ footer {
 }
 
 h1,
-h2 {
+h2,
+h5 {
     color: white;
     text-align: center;
     margin-top: 15px;
@@ -153,6 +154,10 @@ main {
 
 .quiz>aside>h2 {
     margin-bottom: 15px;
+}
+
+.quiz>aside>.quizSuccessRatio {
+    color: gray;
 }
 
 .questionList {

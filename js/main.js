@@ -89,6 +89,9 @@ const createQuizNav = () => {
         $('#question' + index).addClass('btn btn-dark');
         $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
+
+    // update success ratio
+    showQuizSuccessRatio();
 }
 
 const createQuestions = () => {
@@ -189,6 +192,31 @@ function checkAnswer(answer) {
     // check if all was answered
     if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
         finishQuiz();
+    }
+
+    // update success ratio
+    showQuizSuccessRatio();
+}
+
+const showQuizSuccessRatio = () => {
+    // calculate success ratio
+    let ansCount = Number(sessionStorage.getItem('answeredCount'));
+    if (ansCount == 0) {
+        // reset quiz ratio text
+        $('#quizSuccessRatio').text('Answer question for success rate');
+        $('#quizSuccessRatio').css('color', 'gray');
+    } else {
+        // show ratio rounded to two decimals
+        let ratio = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / ansCount;
+        $('#quizSuccessRatio').text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
+        // set text color according to score
+        if (ratio >= 80) {
+            $('#quizSuccessRatio').css('color', 'lightgreen');
+        } else if (ratio < 80 && ratio >= 50) {
+            $('#quizSuccessRatio').css('color', 'orange');
+        } else {
+            $('#quizSuccessRatio').css('color', 'red');
+        }
     }
 }
 
