@@ -14,6 +14,9 @@ $(document).ready(() => {
 });
 
 const createCategories = () => {
+    // add loader
+    $('.categoriesContainer').append(getLoaderElement());
+    // load categories
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://opentdb.com/api_category.php');
     xhr.addEventListener('load', () => {
@@ -31,19 +34,25 @@ const createCategories = () => {
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
         // create button for mix of questions from all categories
-        var mixCatButton = $('<button/>',
-            {
-                text: 'Mix of all categories',
-                id: 'mixed'
-            });
-        $('.categoriesContainer').append(mixCatButton);
-        $('#mixed').addClass('btn btn-warning');
-        $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
+        createMixedCategory();
+        // remove loader
+        $('.rotating-loader').remove();
     });
     xhr.addEventListener('error', function (e) {
         console.error('XHR error', e);
     });
     xhr.send();
+}
+
+const createMixedCategory = () => {
+    var mixCatButton = $('<button/>',
+        {
+            text: 'Mix of all categories',
+            id: 'mixed'
+        });
+    $('.categoriesContainer').append(mixCatButton);
+    $('#mixed').addClass('btn btn-warning');
+    $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
 }
 
 const initQuiz = (questions) => {
@@ -297,6 +306,9 @@ const hideCongratsModal = () => {
 }
 
 /* --- HELPER FUNCTIONS --- */
+const getLoaderElement = () => {
+    return $('<div class="rotating-loader"></div>');
+}
 
 function decodeHTML(text) {
     // using temp text area to convert special characters
