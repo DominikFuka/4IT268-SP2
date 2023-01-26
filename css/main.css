@@ -185,7 +185,7 @@ main {
     margin-bottom: 25px;
 }
 
-.quiz > .quizSidePanel {
+.quiz>.quizSidePanel {
     background-color: transparent;
 }
 
