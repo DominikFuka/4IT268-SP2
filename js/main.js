@@ -187,14 +187,17 @@ const createQuestions = () => {
     questionsWrapper.append(questionsArray);
 }
 
-const showQuestion = (index) => {
-    // enable back all other question buttons and disable button for current question and show current question
+const showQuestion = (qIdx) => {
+    // TODO - performance improvement when prevQIdx stored
+    // enable all question nav btns
     $.each(questionSet, function (index, item) {
         $('#questionList > #question' + index).prop('disabled', false);
         $('#questionContainer' + index).addClass('hidden');
     });
-    $('#questionList > #question' + index).prop('disabled', true);
-    $('#questionContainer' + index).removeClass('hidden');
+    // disable nav btn for current question
+    $('#questionList > #question' + qIdx).prop('disabled', true);
+    // show container with question of given index
+    $('#questionContainer' + qIdx).removeClass('hidden');
 }
 
 const createMultipleAnswers = (idx) => {
