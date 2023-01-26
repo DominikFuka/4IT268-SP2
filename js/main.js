@@ -30,35 +30,32 @@ const createCategories = () => {
     // add loader
     categoriesContainer.append(getLoaderElement());
     // load categories
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://opentdb.com/api_category.php');
-    xhr.addEventListener('load', () => {
-        // get all available categories
-        const data = JSON.parse(xhr.responseText);
-        categories = [...data.trivia_categories];
-        // create category buttons with onclick that returns its id
-        var categoryBtnsArr = [];
-        $.each(categories, function (index, item) {
-            var categoryNameButton = $('<button/>',
-                {
-                    id: item.id,
-                    class: 'btn btn-warning',
-                    text: item.name
-                });
-            categoryNameButton.click({ id: item.id }, categoryButtonClicked);
-            categoryBtnsArr.push(categoryNameButton);
-        });
-        // create button for mix of questions from all categories
-        categoryBtnsArr.push(createMixedCategoryBtn());
-        // append created categories fragment
-        categoriesContainer.append(categoryBtnsArr);
-        // remove loader
-        removeLoaderElement();
+    $.ajax({
+        url: 'https://opentdb.com/api_category.php',
+        type: "GET",
+        success: function (data) {
+            // get all available categories
+            categories = [...data.trivia_categories];
+            // create category buttons with onclick that returns its id
+            var categoryBtnsArr = [];
+            $.each(categories, function (index, item) {
+                var categoryNameButton = $('<button/>',
+                    {
+                        id: item.id,
+                        class: 'btn btn-warning',
+                        text: item.name
+                    });
+                categoryNameButton.click({ id: item.id }, categoryButtonClicked);
+                categoryBtnsArr.push(categoryNameButton);
+            });
+            // create button for mix of questions from all categories
+            categoryBtnsArr.push(createMixedCategoryBtn());
+            // append created categories fragment
+            categoriesContainer.append(categoryBtnsArr);
+            // remove loader
+            removeLoaderElement();
+        }
     });
-    xhr.addEventListener('error', function (e) {
-        console.error('XHR error', e);
-    });
-    xhr.send();
 }
 
 const createMixedCategoryBtn = () => {
