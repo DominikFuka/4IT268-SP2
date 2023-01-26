@@ -11,7 +11,7 @@ const categoriesSection = $('.categories');
 const difficultySection = $('.difficulty');
 const difficultyContainer = $('#difficultySelection');
 const categoriesContainer = $('.categoriesContainer');
-const questionsContainer = $('#questions');
+const questionsWrapper = $('#questions');
 const questionList = $('#questionList');
 const quizSuccessRatio = $('#quizSuccessRatio');
 const congratsModal = $('#congratsModal');
@@ -74,7 +74,7 @@ const createMixedCategoryBtn = () => {
 
 const initQuiz = (questions) => {
     // clear quiz questions and question list before generating a new quiz
-    questionsContainer.empty();
+    questionsWrapper.empty();
     questionList.empty();
     // setup session storage variable to keep track of how many questions were answered and how many correctly
     sessionStorage.setItem('answeredCount', '0');
@@ -134,25 +134,53 @@ const createQuizNav = () => {
 }
 
 const createQuestions = () => {
+    // array with questions
+    var questionsArray = [];
     for (let index = 0; index < AMOUNT_QUESTIONS; index++) {
-        // append question to quiz section
-        questionsContainer.append(
-            '<section class="questionContainer" id="questionContainer' + index + '">' +
-            '<h1>Question #' + (index + 1) + '</h1>' +
-            '<div class="questionNav">' +
-            '<button type="button" class="btn btn-secondary btn-prev-q" onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>' +
-            '<button id="nextQBtn" type="button" class="btn btn-secondary btn-next-q" onclick="nextQBtnClicked(this.id)">Next &#8594;</button>' +
-            '</div>' +
-            '<p class="questionText">' + decodeHTML(questionSet[index].question) + '</p>' +
-            '<form id="answersContainer' + index + '" class="answersContainer" method="post"></form>' +
-            '</section>');
-        // answers form according to type
+        // question headline with number
+        var questionHeadline = $('<h1/>', { text: 'Question #' + (index + 1) });
+        // question navigation with prev and next btns
+        var qNavPrevBtn = $('<button/>', {
+            type: 'button',
+            class: 'btn btn-secondary btn-prev-q',
+            click: prevQBtnClicked,
+            text: decodeHTML('&#8592; Previous')
+        });
+        var qNavNextBtn = $('<button/>', {
+            type: 'button',
+            class: 'btn btn-secondary btn-next-q',
+            click: nextQBtnClicked,
+            text: decodeHTML('Next &#8594;')
+        });
+        var questionNav = $('<div/>', { class: 'questionNav' });
+        questionNav.append(qNavPrevBtn, qNavNextBtn);
+        // question text
+        var questionText = $('<p\>', {
+            class: 'questionText',
+            text: decodeHTML(questionSet[index].question)
+        });
+        // question answers form
+        var questionAnswers = $('<form/>', {
+            id: 'answersContainer' + index,
+            class: 'answersContainer',
+            method: 'post'
+        });
         if (questionSet[index].type == 'multiple') {
-            createMultipleAnswers(index);
+            questionAnswers.append(createMultipleAnswers(index));
         } else if (questionSet[index].type == 'boolean') {
-            createBooleanAnswers(index);
+            questionAnswers.append(createBooleanAnswers(index));
         }
+        // connect all parts of question
+        var questionBody = $('<section/>', {
+            id: 'questionContainer' + index,
+            class: 'questionContainer'
+        });
+        questionBody.append(questionHeadline, questionNav, questionText, questionAnswers);
+        // add to array of questions
+        questionsArray.push(questionBody);
     }
+    // append fragment to DOM
+    questionsWrapper.append(questionsArray);
 }
 
 const showQuestion = (index) => {
@@ -169,38 +197,82 @@ const showQuestion = (index) => {
 }
 
 const createMultipleAnswers = (idx) => {
-    // get other answers and add correct to them
+    // get incorrect answers and add correct
     let answers = [...questionSet[idx].incorrect_answers];
     answers.push(questionSet[idx].correct_answer);
     // mix them up
     shuffleAnswers(answers);
-    // show answers
+    // answers inputs
+    var ansInputs = [];
     $.each(answers, function (index, item) {
         // add Bootstrap structure for each radio answer
-        $('#answersContainer' + idx).append(
-            '<div class="form-check">' +
-            '<input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkAnswer(this.value)">' +
-            '<label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>' +
-            '</div>');
+        var inputRadio = $('<input/>', {
+            id: 'ansCont' + idx + 'A' + (index + 1),
+            class: 'form-check-input',
+            type: 'radio',
+            name: 'answerRadio',
+            value: item
+        });
+        inputRadio.on('click', { value: item }, checkAnswer);
+        var inputRadioLabel = $('<label/>', {
+            class: 'form-check-label',
+            for: 'ansCont' + idx + 'A' + (index + 1),
+            text: item
+        });
+        // complete input answer
+        var inputBody = $('<div/>', { class: 'form-check' });
+        inputBody.append(inputRadio, inputRadioLabel);
+        // add to answers inputs
+        ansInputs.push(inputBody);
     });
+    // return answers for question
+    return ansInputs;
 }
 
 const createBooleanAnswers = (idx) => {
-    // show answers - add Bootstrap structure for with btn-styled radio
-    $('#answersContainer' + idx).append(
-        '<div class="trueFalseContainer">' +
-        '<div class="form-check">' +
-        '<input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkAnswer(this.value)">' +
-        '<label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>' +
-        '</div>' +
-        '<div class="form-check">' +
-        '<input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkAnswer(this.value)">' +
-        '<label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>' +
-        '</div>' +
-        '</div>');
+    // Bootstrap structure with btn-styled radios
+    var truefalseAnsBody = $('<div/>', { class: 'trueFalseContainer' });
+    // true btn and label
+    var trueBtn = $('<input/>', {
+        id: 'ansCont' + idx + 'A0',
+        class: 'btn-check',
+        type: 'radio',
+        name: 'answerRadio',
+        autocomplete: 'off'
+    });
+    trueBtn.on('click', { value: 'True' }, checkAnswer);
+    var trueBtnLabel = $('<label/>', {
+        class: 'btn btn-success btn-answer',
+        for: 'ansCont' + idx + 'A0',
+        text: 'TRUE'
+    });
+    var trueBody = $('<div/>', { class: 'form-check' });
+    trueBody.append(trueBtn, trueBtnLabel);
+    // false btn and label
+    var falseBtn = $('<input/>', {
+        id: 'ansCont' + idx + 'A1',
+        class: 'btn-check',
+        type: 'radio',
+        name: 'answerRadio',
+        autocomplete: 'off'
+    });
+    falseBtn.on('click', { value: 'False' }, checkAnswer);
+    var falseBtnLabel = $('<label/>', {
+        class: 'btn btn-danger btn-answer',
+        for: 'ansCont' + idx + 'A1',
+        text: 'FALSE'
+    });
+    var falseBody = $('<div/>', { class: 'form-check' });
+    falseBody.append(falseBtn, falseBtnLabel);
+    // complete structure
+    truefalseAnsBody.append(trueBody, falseBody);
+    // return completed structure
+    return truefalseAnsBody;
 }
 
-function checkAnswer(answer) {
+function checkAnswer(param) {
+    // fetch value of clicked answer
+    var answer = param.data.value;
     // lock the form so responses can't be changed
     $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
     // check if answer was correct and react accordingly 
@@ -437,14 +509,14 @@ function homepageBtnClicked() {
     homepageBtn.prop('disabled', true);
 }
 
-function prevQBtnClicked(btnId) {
+function prevQBtnClicked() {
     // set current index of question according to nav button
     currQIndex--;
     // show new question
     showQuestion(currQIndex);
 }
 
-function nextQBtnClicked(btnId) {
+function nextQBtnClicked() {
     // set current index of question according to nav button
     currQIndex++;
     // show new question
