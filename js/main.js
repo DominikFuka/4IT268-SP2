@@ -548,32 +548,30 @@ function difficultyButtonClicked(difficulty) {
     // show loader
     difficultyContainer.addClass('hidden');
     difficultySection.append(getLoaderElement());
-    // load questions from selected category of selected difficulty 
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', getQueryURL());
-    xhr.addEventListener('load', () => {
-        const data = JSON.parse(xhr.responseText);
-        if (data.response_code == '0') {
-            // remove loader
-            removeLoaderElement();
-            // hide difficulty and show quiz container
-            difficultySection.addClass('hidden');
-            difficultyContainer.removeClass('hidden');
-            quizSection.removeClass('hidden');
-            // initialize quiz
-            initQuiz(data.results);
-        } else if (data.response_code == '1') {
-            // alert element
-            showNotEnoughQuestionsWarning();
-            // remove loader and show difficulty btns
-            removeLoaderElement();
-            difficultyContainer.removeClass('hidden');
+    // load questions from selected category of selected difficulty
+    $.ajax({
+        url: getQueryURL(),
+        type: "GET",
+        success: function (data) {
+            // successful API query has response code 0
+            if (data.response_code === 0) {
+                // remove loader
+                removeLoaderElement();
+                // hide difficulty and show quiz container
+                difficultyContainer.removeClass('hidden');
+                difficultySection.addClass('hidden');
+                quizSection.removeClass('hidden');
+                // initialize quiz
+                initQuiz(data.results);
+            } else if (data.response_code === 1) {
+                // alert element
+                showNotEnoughQuestionsWarning();
+                // remove loader and show difficulty btns
+                removeLoaderElement();
+                difficultyContainer.removeClass('hidden');
+            }
         }
     });
-    xhr.addEventListener('error', function (e) {
-        console.error('XHR error', e);
-    });
-    xhr.send();
 }
 
 const showNotEnoughQuestionsWarning = () => {
