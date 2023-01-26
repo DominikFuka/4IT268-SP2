@@ -372,7 +372,12 @@ function newQuizSameQuestionsBtnClick() {
     // hide result screen and show quiz container
     $('.resultScreen').addClass('hidden');
     $('.quiz').removeClass('hidden');
-    // initialize quiz
+    // restart quiz
+    restartQuiz();
+}
+
+const restartQuiz = () => {
+    // initialize quiz with the same question set
     initQuiz(questionSet);
 }
 
