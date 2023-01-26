@@ -150,8 +150,8 @@ const createQuestions = () => {
             text: decodeHTML('Next &#8594;')
         });
         // check if it is first or last question to disable nav buttons
-        qNavPrevBtn.prop('disabled', index == 0);
-        qNavNextBtn.prop('disabled', index == questionSet.length - 1);
+        qNavPrevBtn.prop('disabled', index === 0);
+        qNavNextBtn.prop('disabled', index === questionSet.length - 1);
         // complete question nav
         var questionNav = $('<div/>', { class: 'questionNav' });
         questionNav.append(qNavPrevBtn, qNavNextBtn);
@@ -166,9 +166,9 @@ const createQuestions = () => {
             class: 'answersContainer',
             method: 'post'
         });
-        if (questionSet[index].type == 'multiple') {
+        if (questionSet[index].type === 'multiple') {
             questionAnswers.append(createMultipleAnswers(index));
-        } else if (questionSet[index].type == 'boolean') {
+        } else if (questionSet[index].type === 'boolean') {
             questionAnswers.append(createBooleanAnswers(index));
         }
         // connect all parts of question
@@ -277,7 +277,7 @@ function checkAnswer(param) {
     // lock the form so responses can't be changed
     $('#answersContainer' + currQIndex + ' input').prop('disabled', true);
     // check if answer was correct and react accordingly 
-    let isAnsCorrect = (answer == decodeHTML(questionSet[currQIndex].correct_answer));
+    let isAnsCorrect = (answer === decodeHTML(questionSet[currQIndex].correct_answer));
     if (isAnsCorrect) {
         // answer is correct, mark the question in the list
         $('#question' + currQIndex).css('color', 'lightgreen');
@@ -301,7 +301,7 @@ function checkAnswer(param) {
     let ansCount = Number(sessionStorage.getItem('answeredCount')) + 1;
     sessionStorage.setItem('answeredCount', ansCount);
     // check if all was answered
-    if (sessionStorage.getItem('answeredCount') == AMOUNTQUESTIONS()) {
+    if (Number(sessionStorage.getItem('answeredCount')) === AMOUNTQUESTIONS()) {
         finishQuiz();
     }
 
@@ -312,7 +312,7 @@ function checkAnswer(param) {
 const showQuizSuccessRatio = () => {
     // calculate success ratio
     let ansCount = Number(sessionStorage.getItem('answeredCount'));
-    if (ansCount == 0) {
+    if (ansCount === 0) {
         // reset quiz ratio text
         quizSuccessRatio.text('Answer question for success rate');
         quizSuccessRatio.css('color', 'gray');
