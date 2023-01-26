@@ -345,11 +345,16 @@ function shuffleAnswers(answerArray) {
 /* --- ONCLICK FUNCTIONS --- */
 
 function newQuizSameSettingsBtnClick() {
+    // show loader
+    $('.resultScreenNav > div').append(getLoaderElement());
+    // AJAX request for new questions with the same settings
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + selectedDifficulty);
+    xhr.open('GET', getQueryURL());
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
         if (data.response_code == '0') {
+            // remove loader
+            removeLoaderElement();
             // hide result screen and show quiz container
             $('.resultScreen').addClass('hidden');
             $('.quiz').removeClass('hidden');
