@@ -40,12 +40,12 @@ const createCategories = () => {
         $.each(categories, function (index, item) {
             var categoryNameButton = $('<button/>',
                 {
-                    text: item.name,
-                    id: item.id
+                    id: item.id,
+                    class: 'btn btn-warning',
+                    text: item.name
                 });
+            categoryNameButton.click({ id: item.id }, categoryButtonClicked);
             categoriesContainer.append(categoryNameButton);
-            $('#' + item.id).addClass('btn btn-warning');
-            $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
         // create button for mix of questions from all categories
         createMixedCategory();
@@ -61,18 +61,18 @@ const createCategories = () => {
 const createMixedCategory = () => {
     var mixCatButton = $('<button/>',
         {
-            text: 'Mix of all categories',
-            id: 'mixed'
+            id: 'mixed',
+            class: 'btn btn-warning',
+            text: 'Mix of all categories'
         });
+    mixCatButton.click({ id: 'mixed' }, categoryButtonClicked);
     categoriesContainer.append(mixCatButton);
-    $('#mixed').addClass('btn btn-warning');
-    $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
 }
 
 const initQuiz = (questions) => {
     // clear quiz questions and question list before generating a new quiz
     questionsContainer.empty();
-    $('#questionList > button').remove();
+    questionList.empty();
     // setup session storage variable to keep track of how many questions were answered and how many correctly
     sessionStorage.setItem('answeredCount', '0');
     sessionStorage.setItem('quizCorrectCount', '0');
@@ -115,12 +115,12 @@ const createQuizNav = () => {
         // fill aside list
         var questionListButton = $('<button/>',
             {
-                text: 'QUESTION #' + (index + 1),
-                id: 'question' + index
+                id: 'question' + index,
+                class: 'btn btn-dark',
+                text: 'QUESTION #' + (index + 1)
             });
+        questionListButton.click({ goToIdx: index }, jumpToQuestion);
         questionList.append(questionListButton);
-        $('#question' + index).addClass('btn btn-dark');
-        $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
 
     // update success ratio
@@ -132,13 +132,13 @@ const createQuestions = () => {
         // append question to quiz section
         questionsContainer.append(
             '<section class="questionContainer" id="questionContainer' + index + '">' +
-                '<h1>Question #' + (index + 1) + '</h1>' +
-                '<div class="questionNav">' +
-                    '<button type="button" class="btn btn-secondary btn-prev-q" onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>' +
-                    '<button id="nextQBtn" type="button" class="btn btn-secondary btn-next-q" onclick="nextQBtnClicked(this.id)">Next &#8594;</button>' +
-                '</div>' +
-                '<p class="questionText">' + decodeHTML(questionSet[index].question) + '</p>' +
-                '<form id="answersContainer' + index + '" class="answersContainer" method="post"></form>' +
+            '<h1>Question #' + (index + 1) + '</h1>' +
+            '<div class="questionNav">' +
+            '<button type="button" class="btn btn-secondary btn-prev-q" onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>' +
+            '<button id="nextQBtn" type="button" class="btn btn-secondary btn-next-q" onclick="nextQBtnClicked(this.id)">Next &#8594;</button>' +
+            '</div>' +
+            '<p class="questionText">' + decodeHTML(questionSet[index].question) + '</p>' +
+            '<form id="answersContainer' + index + '" class="answersContainer" method="post"></form>' +
             '</section>');
         // answers form according to type
         if (questionSet[index].type == 'multiple') {
@@ -173,8 +173,8 @@ const createMultipleAnswers = (idx) => {
         // add Bootstrap structure for each radio answer
         $('#answersContainer' + idx).append(
             '<div class="form-check">' +
-                '<input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkAnswer(this.value)">' +
-                '<label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>' +
+            '<input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkAnswer(this.value)">' +
+            '<label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>' +
             '</div>');
     });
 }
@@ -183,14 +183,14 @@ const createBooleanAnswers = (idx) => {
     // show answers - add Bootstrap structure for with btn-styled radio
     $('#answersContainer' + idx).append(
         '<div class="trueFalseContainer">' +
-            '<div class="form-check">' +
-                '<input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkAnswer(this.value)">' +
-                '<label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>' +
-            '</div>' +
-            '<div class="form-check">' +
-                '<input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkAnswer(this.value)">' +
-                '<label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>' +
-            '</div>' +
+        '<div class="form-check">' +
+        '<input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkAnswer(this.value)">' +
+        '<label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>' +
+        '</div>' +
+        '<div class="form-check">' +
+        '<input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkAnswer(this.value)">' +
+        '<label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>' +
+        '</div>' +
         '</div>');
 }
 
@@ -280,7 +280,11 @@ const incrIncorrectAnsCount = () => {
 
 const ansResultPopup = (result) => {
     // alert div using Bootstrap
-    let resultMsg = $('<div class="alert resultPopup"></div>');
+    let resultMsg = $('<div/>',
+        {
+            class: 'alert resultPopup'
+        });
+    // text and color depends on answer
     if (result) {
         resultMsg.text('CORRECT!');
         resultMsg.addClass('alert-success');
@@ -289,10 +293,10 @@ const ansResultPopup = (result) => {
         resultMsg.addClass('alert-danger');
     }
     $('#answersContainer' + currQIndex).before(resultMsg);
-    $('.resultPopup').alert();
+    resultMsg.alert();
     // slide up closing animation for alert after 1.5 sec
     window.setTimeout(function () {
-        $('.resultPopup').slideUp(500, function () {
+        resultMsg.slideUp(500, function () {
             $(this).remove();
         });
     }, 1500);
@@ -486,17 +490,20 @@ function difficultyButtonClicked(difficulty) {
 }
 
 const showNotEnoughQuestionsWarning = () => {
-    let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger alertNotEnoughQs"></div>');
+    let errorMsg = $('<div/>',
+        {
+            class: 'alert alert-danger alertNotEnoughQs'
+        });
     errorMsg.text('Sorry, not enough questions in "' + getCategoryName(selectedCategory).toUpperCase() + '" category and "' + selectedDifficulty.toUpperCase() + '" difficulty yet. Please select another difficulty.');
     // pop up alert above difficulty buttons
     $('.difficulty > h1').after(errorMsg);
-    $('#alertNotEnoughQuestions').alert();
+    errorMsg.alert();
     // slide up closing animation for alert after 5 sec
     window.setTimeout(function () {
-        $('#alertNotEnoughQuestions').slideUp(500, function () {
+        errorMsg.slideUp(500, function () {
             $(this).remove();
         });
-    }, 10000);
+    }, 7000);
 }
 
 const getQueryURL = () => {
