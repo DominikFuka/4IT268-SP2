@@ -30,6 +30,24 @@ h5 {
     display: none !important;
 }
 
+@keyframes spin {
+    from {
+        transform: rotate(0deg)
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.loader {
+    border: 5px solid rgb(168, 127, 23);
+    border-top: 3px solid white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
 header {
     display: flex;
     flex-direction: row;
