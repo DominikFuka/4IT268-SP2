@@ -450,24 +450,22 @@ function newQuizSameSettingsBtnClick() {
     // show loader
     $('.resultScreenNav > div').append(getLoaderElement());
     // AJAX request for new questions with the same settings
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', getQueryURL());
-    xhr.addEventListener('load', () => {
-        const data = JSON.parse(xhr.responseText);
-        if (data.response_code == '0') {
-            // remove loader
-            removeLoaderElement();
-            // hide result screen and show quiz container
-            resultScreen.addClass('hidden');
-            quizSection.removeClass('hidden');
-            // initialize quiz
-            initQuiz(data.results);
+    $.ajax({
+        url: getQueryURL(),
+        type: "GET",
+        success: function (data) {
+            // successful API query has response code 0
+            if (data.response_code === 0) {
+                // remove loader
+                removeLoaderElement();
+                // hide result screen and show quiz container
+                resultScreen.addClass('hidden');
+                quizSection.removeClass('hidden');
+                // initialize quiz
+                initQuiz(data.results);
+            }
         }
     });
-    xhr.addEventListener('error', function (e) {
-        console.error('XHR error', e);
-    });
-    xhr.send();
 }
 
 function newQuizSameQuestionsBtnClick() {
