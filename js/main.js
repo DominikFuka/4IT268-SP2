@@ -114,6 +114,8 @@ const finishQuiz = () => {
 }
 
 const createQuizNav = () => {
+    // save question nav button to array
+    var questionNavBtns = [];
     $.each(questionSet, function (index, item) {
         // fill aside list
         var questionListButton = $('<button/>',
@@ -123,9 +125,10 @@ const createQuizNav = () => {
                 text: 'QUESTION #' + (index + 1)
             });
         questionListButton.click({ goToIdx: index }, jumpToQuestion);
-        questionList.append(questionListButton);
+        questionNavBtns.push(questionListButton);
     });
-
+    // append as a document fragment all at once
+    questionList.append(questionNavBtns);
     // update success ratio
     showQuizSuccessRatio();
 }
