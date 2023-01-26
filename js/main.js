@@ -152,6 +152,10 @@ const createQuestions = () => {
             click: nextQBtnClicked,
             text: decodeHTML('Next &#8594;')
         });
+        // check if it is first or last question to disable nav buttons
+        qNavPrevBtn.prop('disabled', index == 0);
+        qNavNextBtn.prop('disabled', index == questionSet.length - 1);
+        // complete question nav
         var questionNav = $('<div/>', { class: 'questionNav' });
         questionNav.append(qNavPrevBtn, qNavNextBtn);
         // question text
@@ -191,9 +195,6 @@ const showQuestion = (index) => {
     });
     $('#questionList > #question' + index).prop('disabled', true);
     $('#questionContainer' + index).removeClass('hidden');
-    // check if it is first or last question to disable nav buttons
-    $('.btn-prev-q').prop('disabled', index == 0);
-    $('.btn-next-q').prop('disabled', index == questionSet.length - 1);
 }
 
 const createMultipleAnswers = (idx) => {
