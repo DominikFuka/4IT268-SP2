@@ -6,17 +6,29 @@ var selectedCategory;
 var selectedDifficulty;
 var currQIndex = 0;
 
+const categoriesContainer = $('.categoriesContainer');
+const homepageBtn = $('#homepageBtn');
+const questionsContainer = $('#questions');
+const questionList = $('#questionList');
+const quizSuccessRatio = $('#quizSuccessRatio');
+const congratsModal = $('#congratsModal');
+const resultScreen = $('.resultScreen');
+const quizSection = $('.quiz');
+const categoriesSection = $('.categories');
+const difficultySection = $('.difficulty');
+const difficultyContainer = $('#difficultySelection');
+
 $(document).ready(() => {
     // show categories as buttons when site loads
     createCategories();
 
     // disable homepage btn to show current page
-    $('#homepageBtn').prop('disabled', true);
+    homepageBtn.prop('disabled', true);
 });
 
 const createCategories = () => {
     // add loader
-    $('.categoriesContainer').append(getLoaderElement());
+    categoriesContainer.append(getLoaderElement());
     // load categories
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://opentdb.com/api_category.php');
@@ -24,14 +36,14 @@ const createCategories = () => {
         // get all available categories
         const data = JSON.parse(xhr.responseText);
         categories = [...data.trivia_categories];
-        // create a button with onClick that returns its id
+        // create buttons with onclick that returns its id
         $.each(categories, function (index, item) {
             var categoryNameButton = $('<button/>',
                 {
                     text: item.name,
                     id: item.id
                 });
-            $('.categoriesContainer').append(categoryNameButton);
+            categoriesContainer.append(categoryNameButton);
             $('#' + item.id).addClass('btn btn-warning');
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
@@ -52,14 +64,14 @@ const createMixedCategory = () => {
             text: 'Mix of all categories',
             id: 'mixed'
         });
-    $('.categoriesContainer').append(mixCatButton);
+    categoriesContainer.append(mixCatButton);
     $('#mixed').addClass('btn btn-warning');
     $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
 }
 
 const initQuiz = (questions) => {
     // clear quiz questions and question list before generating a new quiz
-    $('#questions').empty();
+    questionsContainer.empty();
     $('#questionList > button').remove();
     // setup session storage variable to keep track of how many questions were answered and how many correctly
     sessionStorage.setItem('answeredCount', '0');
@@ -94,10 +106,10 @@ const finishQuiz = () => {
     $('#corrAnsPercOverall').append(overallPercent + ' %');
 
     // create button to show result screen in quiz nav above questions
-    $('#questionList').prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
+    questionList.prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
 
     // open modal with congratulations (Bootstrap)
-    $('#congratsModal').modal('show');
+    congratsModal.modal('show');
 }
 
 const createQuizNav = () => {
@@ -108,7 +120,7 @@ const createQuizNav = () => {
                 text: 'QUESTION #' + (index + 1),
                 id: 'question' + index
             });
-        $('#questionList').append(questionListButton);
+        questionList.append(questionListButton);
         $('#question' + index).addClass('btn btn-dark');
         $('#question' + index).click({ goToIdx: index }, jumpToQuestion);
     });
@@ -120,7 +132,7 @@ const createQuizNav = () => {
 const createQuestions = () => {
     for (let index = 0; index < AMOUNT_QUESTIONS; index++) {
         // append question to quiz section
-        $('#questions').append('\
+        questionsContainer.append('\
             <section class="questionContainer" id="questionContainer' + index + '">\
                 <h1>Question #' + (index + 1) + '</h1>\
                 <div class="questionNav">\
@@ -226,19 +238,19 @@ const showQuizSuccessRatio = () => {
     let ansCount = Number(sessionStorage.getItem('answeredCount'));
     if (ansCount == 0) {
         // reset quiz ratio text
-        $('#quizSuccessRatio').text('Answer question for success rate');
-        $('#quizSuccessRatio').css('color', 'gray');
+        quizSuccessRatio.text('Answer question for success rate');
+        quizSuccessRatio.css('color', 'gray');
     } else {
         // show ratio rounded to two decimals
         let ratio = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / ansCount;
-        $('#quizSuccessRatio').text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
+        quizSuccessRatio.text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
         // set text color according to score
         if (ratio >= 80) {
-            $('#quizSuccessRatio').css('color', 'lightgreen');
+            quizSuccessRatio.css('color', 'lightgreen');
         } else if (ratio < 80 && ratio >= 50) {
-            $('#quizSuccessRatio').css('color', 'orange');
+            quizSuccessRatio.css('color', 'orange');
         } else {
-            $('#quizSuccessRatio').css('color', 'red');
+            quizSuccessRatio.css('color', 'red');
         }
     }
 }
@@ -304,7 +316,7 @@ function jumpToQuestion(param) {
 }
 
 const hideCongratsModal = () => {
-    $('#congratsModal').modal('hide');
+    congratsModal.modal('hide');
 }
 
 /* --- HELPER FUNCTIONS --- */
@@ -356,8 +368,8 @@ function newQuizSameSettingsBtnClick() {
             // remove loader
             removeLoaderElement();
             // hide result screen and show quiz container
-            $('.resultScreen').addClass('hidden');
-            $('.quiz').removeClass('hidden');
+            resultScreen.addClass('hidden');
+            quizSection.removeClass('hidden');
             // initialize quiz
             initQuiz(data.results);
         }
@@ -370,8 +382,8 @@ function newQuizSameSettingsBtnClick() {
 
 function newQuizSameQuestionsBtnClick() {
     // hide result screen and show quiz container
-    $('.resultScreen').addClass('hidden');
-    $('.quiz').removeClass('hidden');
+    resultScreen.addClass('hidden');
+    quizSection.removeClass('hidden');
     // restart quiz
     restartQuiz();
 }
@@ -383,16 +395,16 @@ const restartQuiz = () => {
 
 function hideResultScreen() {
     // hide result screen and go back to quiz
-    $('.resultScreen').addClass('hidden');
-    $('.quiz').removeClass('hidden');
+    resultScreen.addClass('hidden');
+    quizSection.removeClass('hidden');
 }
 
 function showResultScreenBtnClick() {
     // hide modal
     hideCongratsModal();
     // show result screen
-    $('.quiz').addClass('hidden');
-    $('.resultScreen').removeClass('hidden');
+    quizSection.addClass('hidden');
+    resultScreen.removeClass('hidden');
 }
 
 function showAnsBtnClick() {
@@ -406,12 +418,12 @@ function showAnsBtnClick() {
 
 function homepageBtnClicked() {
     // show categories selection and hide all other sections
-    $('.categories').removeClass('hidden');
-    $('.difficulty').addClass('hidden')
-    $('.quiz').addClass('hidden');
-    $('.resultScreen').addClass('hidden');
+    categoriesSection.removeClass('hidden');
+    difficultySection.addClass('hidden')
+    quizSection.addClass('hidden');
+    resultScreen.addClass('hidden');
     // disable homepage btn to mark current page
-    $('#homepageBtn').prop('disabled', true);
+    homepageBtn.prop('disabled', true);
 }
 
 function prevQBtnClicked(btnId) {
@@ -432,18 +444,18 @@ function categoryButtonClicked(param) {
     // set selected category
     selectedCategory = param.data.id;
     // show difficulty selection
-    $('.categories').addClass('hidden');
-    $('.difficulty').removeClass('hidden');
+    categoriesSection.addClass('hidden');
+    difficultySection.removeClass('hidden');
     // enable homepage btn since homepage is no longer current visible page
-    $('#homepageBtn').prop('disabled', false);
+    homepageBtn.prop('disabled', false);
 }
 
 function difficultyButtonClicked(difficulty) {
     // set selected difficulty for result screen
     selectedDifficulty = difficulty;
     // show loader
-    $('#difficultySelection').addClass('hidden');
-    $('.difficulty').append(getLoaderElement());
+    difficultyContainer.addClass('hidden');
+    difficultySection.append(getLoaderElement());
     // load questions from selected category of selected difficulty 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', getQueryURL());
@@ -453,9 +465,9 @@ function difficultyButtonClicked(difficulty) {
             // remove loader
             removeLoaderElement();
             // hide difficulty and show quiz container
-            $('.difficulty').addClass('hidden');
-            $('#difficultySelection').removeClass('hidden');
-            $('.quiz').removeClass('hidden');
+            difficultySection.addClass('hidden');
+            difficultyContainer.removeClass('hidden');
+            quizSection.removeClass('hidden');
             // initialize quiz
             initQuiz(data.results);
         } else if (data.response_code == '1') {
@@ -463,7 +475,7 @@ function difficultyButtonClicked(difficulty) {
             showNotEnoughQuestionsWarning();
             // remove loader and show difficulty btns
             removeLoaderElement();
-            $('#difficultySelection').removeClass('hidden');
+            difficultyContainer.removeClass('hidden');
         }
     });
     xhr.addEventListener('error', function (e) {
