@@ -576,7 +576,11 @@ const showNotEnoughQuestionsWarning = () => {
         {
             class: 'alert alert-danger alertNotEnoughQs'
         });
-    errorMsg.text('Sorry, not enough questions in "' + getCategoryName(selectedCategory).toUpperCase() + '" category and "' + selectedDifficulty.toUpperCase() + '" difficulty yet. Please select another difficulty.');
+    errorMsg.text('Sorry, not enough questions in "' +
+        getCategoryName(selectedCategory).toUpperCase() +
+        '" category and "' +
+        selectedDifficulty.toUpperCase() +
+        '" difficulty yet. Please select another difficulty or category.');
     // pop up alert above difficulty buttons
     $('.difficulty > h1').after(errorMsg);
     errorMsg.alert();
