@@ -1,5 +1,6 @@
 const AMOUNT_QUESTIONS = '10';
 var questionSet;
+var categories;
 
 var selectedCategory;
 var selectedDifficulty;
@@ -14,13 +15,17 @@ $(document).ready(() => {
 });
 
 const createCategories = () => {
+    // add loader
+    $('.categoriesContainer').append(getLoaderElement());
+    // load categories
     const xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://opentdb.com/api_category.php');
     xhr.addEventListener('load', () => {
         // get all available categories
         const data = JSON.parse(xhr.responseText);
+        categories = [...data.trivia_categories];
         // create a button with onClick that returns its id
-        $.each(data.trivia_categories, function (index, item) {
+        $.each(categories, function (index, item) {
             var categoryNameButton = $('<button/>',
                 {
                     text: item.name,
@@ -31,19 +36,25 @@ const createCategories = () => {
             $('#' + item.id).click({ id: item.id }, categoryButtonClicked);
         });
         // create button for mix of questions from all categories
-        var mixCatButton = $('<button/>',
-            {
-                text: 'Mix of all categories',
-                id: 'mixed'
-            });
-        $('.categoriesContainer').append(mixCatButton);
-        $('#mixed').addClass('btn btn-warning');
-        $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
+        createMixedCategory();
+        // remove loader
+        removeLoaderElement();
     });
     xhr.addEventListener('error', function (e) {
         console.error('XHR error', e);
     });
     xhr.send();
+}
+
+const createMixedCategory = () => {
+    var mixCatButton = $('<button/>',
+        {
+            text: 'Mix of all categories',
+            id: 'mixed'
+        });
+    $('.categoriesContainer').append(mixCatButton);
+    $('#mixed').addClass('btn btn-warning');
+    $('#mixed').click({ id: 'mixed' }, categoryButtonClicked);
 }
 
 const initQuiz = (questions) => {
@@ -297,6 +308,24 @@ const hideCongratsModal = () => {
 }
 
 /* --- HELPER FUNCTIONS --- */
+const getLoaderElement = () => {
+    return $('<div class="rotating-loader"></div>');
+}
+
+const removeLoaderElement = () => {
+    $('.rotating-loader').remove();
+}
+
+const getCategoryName = (id) => {
+    var categoryName = '';
+    $.each(categories, function (index, item) {
+        if (item.id == id) {
+            categoryName = item.name;
+            return false;
+        }
+    });
+    return categoryName;
+}
 
 function decodeHTML(text) {
     // using temp text area to convert special characters
@@ -316,11 +345,16 @@ function shuffleAnswers(answerArray) {
 /* --- ONCLICK FUNCTIONS --- */
 
 function newQuizSameSettingsBtnClick() {
+    // show loader
+    $('.resultScreenNav > div').append(getLoaderElement());
+    // AJAX request for new questions with the same settings
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS + '&category=' + selectedCategory + '&difficulty=' + selectedDifficulty);
+    xhr.open('GET', getQueryURL());
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
         if (data.response_code == '0') {
+            // remove loader
+            removeLoaderElement();
             // hide result screen and show quiz container
             $('.resultScreen').addClass('hidden');
             $('.quiz').removeClass('hidden');
@@ -394,35 +428,49 @@ function categoryButtonClicked(param) {
 function difficultyButtonClicked(difficulty) {
     // set selected difficulty for result screen
     selectedDifficulty = difficulty;
+    // show loader
+    $('#difficultySelection').addClass('hidden');
+    $('.difficulty').append(getLoaderElement());
     // load questions from selected category of selected difficulty 
     const xhr = new XMLHttpRequest();
     xhr.open('GET', getQueryURL());
     xhr.addEventListener('load', () => {
         const data = JSON.parse(xhr.responseText);
         if (data.response_code == '0') {
+            // remove loader
+            removeLoaderElement();
             // hide difficulty and show quiz container
             $('.difficulty').addClass('hidden');
+            $('#difficultySelection').removeClass('hidden');
             $('.quiz').removeClass('hidden');
             // initialize quiz
             initQuiz(data.results);
         } else if (data.response_code == '1') {
             // alert element
-            let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger"></div>').text('Sorry, not enough questions in selected category and difficulty yet. Please select another difficulty.');
-            // pop up alert above difficulty buttons
-            $('.difficulty > h1').after(errorMsg);
-            $('#alertNotEnoughQuestions').alert();
-            // slide up closing animation for alert after 5 sec
-            window.setTimeout(function () {
-                $('#alertNotEnoughQuestions').slideUp(500, function () {
-                    $(this).remove();
-                });
-            }, 6000);
+            showNotEnoughQuestionsWarning();
+            // remove loader and show difficulty btns
+            removeLoaderElement();
+            $('#difficultySelection').removeClass('hidden');
         }
     });
     xhr.addEventListener('error', function (e) {
         console.error('XHR error', e);
     });
     xhr.send();
+}
+
+const showNotEnoughQuestionsWarning = () => {
+    let errorMsg = $('<div id="alertNotEnoughQuestions" class="alert alert-danger alertNotEnoughQs"></div>');
+    errorMsg.text('Sorry, not enough questions in "' + getCategoryName(selectedCategory).toUpperCase() + '" category and "' + selectedDifficulty.toUpperCase() + '" difficulty yet. Please select another difficulty.');
+    // pop up alert above difficulty buttons
+    $('.difficulty > h1').after(errorMsg);
+    $('#alertNotEnoughQuestions').alert();
+    // slide up closing animation for alert after 5 sec
+    window.setTimeout(function () {
+        $('#alertNotEnoughQuestions').slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 10000);
 }
 
 const getQueryURL = () => {
