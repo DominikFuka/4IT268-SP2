@@ -386,7 +386,13 @@ const ansResultPopup = (result) => {
 
 const createCorrectAnsBtn = () => {
     // show button for correct answer
-    let ansBtn = $('<button id="showAnsBtn' + currQIndex + '" type="button" class="btn btn-info correctAndBtn" onclick="showAnsBtnClick()">Show correct answer</button>');
+    let ansBtn = $('<button/>', {
+        id: 'showAnsBtn' + currQIndex,
+        class: 'btn btn-info correctAnsBtn',
+        type: 'button',
+        click: showAnsBtnClick,
+        text: 'Show correct answer'
+    });
     // append behind answers
     $('#answersContainer' + currQIndex).after(ansBtn);
 }
@@ -498,7 +504,11 @@ function showAnsBtnClick() {
     // remove button that was clicked
     $('#showAnsBtn' + currQIndex).remove();
     // create alert div with correct answer
-    let correctAnsAlert = $('<div class="alert alert-info correctAnsPopup">Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b></div>');
+    let correctAnsAlert = $('<div/>', {
+        class: 'alert alert-info correctAnsPopup',
+    });
+    correctAnsAlert.html('Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b>');
+    //let correctAnsAlert = $('<div class="alert alert-info correctAnsPopup">Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b></div>');
     // attach it behind answers
     $('#answersContainer' + currQIndex).after(correctAnsAlert);
 }
