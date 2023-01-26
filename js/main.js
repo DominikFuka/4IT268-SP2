@@ -1,4 +1,4 @@
-const AMOUNT_QUESTIONS = '10';
+function AMOUNTQUESTIONS() { return 10; }
 var questionSet;
 var categories;
 
@@ -96,11 +96,11 @@ const finishQuiz = () => {
     // generate data in hidden end result screen
     $('#selCat').append($('#' + selectedCategory).text());
     $('#selDiff').append(selectedDifficulty);
-    $('#qCount').append(AMOUNT_QUESTIONS);
+    $('#qCount').append(AMOUNTQUESTIONS());
 
     $('#corrAnsCount').append(sessionStorage.getItem('quizCorrectCount'));
-    $('#incorrAnsCount').append(Number(AMOUNT_QUESTIONS) - Number(sessionStorage.getItem('quizCorrectCount')));
-    let quizPercent = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / Number(AMOUNT_QUESTIONS);
+    $('#incorrAnsCount').append(AMOUNTQUESTIONS() - Number(sessionStorage.getItem('quizCorrectCount')));
+    let quizPercent = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / AMOUNTQUESTIONS();
     $('#corrAnsPercQuiz').append(roundTwoDecimals(quizPercent) + ' %');
 
     let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
@@ -136,7 +136,7 @@ const createQuizNav = () => {
 const createQuestions = () => {
     // array with questions
     var questionsArray = [];
-    for (let index = 0; index < AMOUNT_QUESTIONS; index++) {
+    for (let index = 0; index < AMOUNTQUESTIONS(); index++) {
         // question headline with number
         var questionHeadline = $('<h1/>', { text: 'Question #' + (index + 1) });
         // question navigation with prev and next btns
@@ -304,7 +304,7 @@ function checkAnswer(param) {
     let ansCount = Number(sessionStorage.getItem('answeredCount')) + 1;
     sessionStorage.setItem('answeredCount', ansCount);
     // check if all was answered
-    if (sessionStorage.getItem('answeredCount') == AMOUNT_QUESTIONS) {
+    if (sessionStorage.getItem('answeredCount') == AMOUNTQUESTIONS()) {
         finishQuiz();
     }
 
@@ -604,7 +604,7 @@ const showNotEnoughQuestionsWarning = () => {
 
 const getQueryURL = () => {
     // create pieces for API query
-    var queryBase = 'https://opentdb.com/api.php?amount=' + AMOUNT_QUESTIONS;
+    var queryBase = 'https://opentdb.com/api.php?amount=' + AMOUNTQUESTIONS();
     if (selectedCategory !== 'mixed') {
         var queryCategory = '&category=' + selectedCategory;
     }
