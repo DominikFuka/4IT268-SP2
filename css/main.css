@@ -185,16 +185,26 @@ main {
     margin-bottom: 25px;
 }
 
-.quiz>aside {
-    flex-basis: 25%;
+.quiz > .quizSidePanel {
+    background-color: transparent;
 }
 
-.quiz>aside>h2 {
+.quiz aside {
+    flex-basis: 25%;
+    display: flex;
+    flex-direction: column;
+}
+
+.quiz aside>h2 {
     margin-bottom: 15px;
 }
 
-.quiz>aside>.quizSuccessRatio {
+.quiz aside>.quizSuccessRatio {
     color: gray;
+}
+
+.quiz aside>.restartQuizBtn {
+    margin: 10px;
 }
 
 .questionList {
