@@ -101,11 +101,28 @@ main {
     padding: 30px;
 }
 
-.difficulty>div {
+.difficulty {
+    display: flex;
+    flex-direction: column;
+}
+
+.difficulty>.difficultySelection {
     display: flex;
     justify-content: center;
     gap: 30px 30px;
     margin: 30px 0px;
+}
+
+.difficulty>.rotating-loader {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.difficulty>.alertNotEnoughQs {
+    font-size: x-large;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
 }
 
 .quiz {
