@@ -368,6 +368,14 @@ function newQuizSameSettingsBtnClick() {
     xhr.send();
 }
 
+function newQuizSameQuestionsBtnClick() {
+    // hide result screen and show quiz container
+    $('.resultScreen').addClass('hidden');
+    $('.quiz').removeClass('hidden');
+    // initialize quiz
+    initQuiz(questionSet);
+}
+
 function hideResultScreen() {
     // hide result screen and go back to quiz
     $('.resultScreen').addClass('hidden');
