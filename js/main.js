@@ -215,13 +215,13 @@ const createMultipleAnswers = (idx) => {
             class: 'form-check-input',
             type: 'radio',
             name: 'answerRadio',
-            value: item
+            value: decodeHTML(item)
         });
-        inputRadio.on('click', { value: item }, checkAnswer);
+        inputRadio.on('click', { value: decodeHTML(item) }, checkAnswer);
         var inputRadioLabel = $('<label/>', {
             class: 'form-check-label',
             for: 'ansCont' + idx + 'A' + (index + 1),
-            text: item
+            text: decodeHTML(item)
         });
         // complete input answer
         var inputBody = $('<div/>', { class: 'form-check' });
