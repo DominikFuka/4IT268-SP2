@@ -36,7 +36,8 @@ const createCategories = () => {
         // get all available categories
         const data = JSON.parse(xhr.responseText);
         categories = [...data.trivia_categories];
-        // create buttons with onclick that returns its id
+        // create category buttons with onclick that returns its id
+        var categoryBtnsArr = [];
         $.each(categories, function (index, item) {
             var categoryNameButton = $('<button/>',
                 {
@@ -45,10 +46,12 @@ const createCategories = () => {
                     text: item.name
                 });
             categoryNameButton.click({ id: item.id }, categoryButtonClicked);
-            categoriesContainer.append(categoryNameButton);
+            categoryBtnsArr.push(categoryNameButton);
         });
         // create button for mix of questions from all categories
-        createMixedCategory();
+        categoryBtnsArr.push(createMixedCategoryBtn());
+        // append created categories fragment
+        categoriesContainer.append(categoryBtnsArr);
         // remove loader
         removeLoaderElement();
     });
@@ -58,7 +61,7 @@ const createCategories = () => {
     xhr.send();
 }
 
-const createMixedCategory = () => {
+const createMixedCategoryBtn = () => {
     var mixCatButton = $('<button/>',
         {
             id: 'mixed',
@@ -66,7 +69,7 @@ const createMixedCategory = () => {
             text: 'Mix of all categories'
         });
     mixCatButton.click({ id: 'mixed' }, categoryButtonClicked);
-    categoriesContainer.append(mixCatButton);
+    return mixCatButton;
 }
 
 const initQuiz = (questions) => {
