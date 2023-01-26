@@ -130,17 +130,16 @@ const createQuizNav = () => {
 const createQuestions = () => {
     for (let index = 0; index < AMOUNT_QUESTIONS; index++) {
         // append question to quiz section
-        questionsContainer.append('\
-            <section class="questionContainer" id="questionContainer' + index + '">\
-                <h1>Question #' + (index + 1) + '</h1>\
-                <div class="questionNav">\
-                    <button type="button" class="btn btn-secondary btn-prev-q" onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>\
-                    <button id="nextQBtn" type="button" class="btn btn-secondary btn-next-q" onclick="nextQBtnClicked(this.id)">Next &#8594;</button>\
-                </div>\
-                <p class="questionText">' + decodeHTML(questionSet[index].question) + '</p>\
-                <form id="answersContainer' + index + '" class="answersContainer" method="post"></form>\
-            </section>\
-        ');
+        questionsContainer.append(
+            '<section class="questionContainer" id="questionContainer' + index + '">' +
+                '<h1>Question #' + (index + 1) + '</h1>' +
+                '<div class="questionNav">' +
+                    '<button type="button" class="btn btn-secondary btn-prev-q" onclick="prevQBtnClicked(this.id)">&#8592; Previous</button>' +
+                    '<button id="nextQBtn" type="button" class="btn btn-secondary btn-next-q" onclick="nextQBtnClicked(this.id)">Next &#8594;</button>' +
+                '</div>' +
+                '<p class="questionText">' + decodeHTML(questionSet[index].question) + '</p>' +
+                '<form id="answersContainer' + index + '" class="answersContainer" method="post"></form>' +
+            '</section>');
         // answers form according to type
         if (questionSet[index].type == 'multiple') {
             createMultipleAnswers(index);
@@ -172,27 +171,27 @@ const createMultipleAnswers = (idx) => {
     // show answers
     $.each(answers, function (index, item) {
         // add Bootstrap structure for each radio answer
-        $('#answersContainer' + idx).append('\
-            <div class="form-check">\
-                <input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkAnswer(this.value)">\
-                <label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>\
-            </div>');
+        $('#answersContainer' + idx).append(
+            '<div class="form-check">' +
+                '<input class="form-check-input" type="radio" name="answerRadio" value="' + item + '" id="ansCont' + idx + 'A' + (index + 1) + '" onchange="checkAnswer(this.value)">' +
+                '<label class="form-check-label" for="ansCont' + idx + 'A' + (index + 1) + '">' + item + '</label>' +
+            '</div>');
     });
 }
 
 const createBooleanAnswers = (idx) => {
     // show answers - add Bootstrap structure for with btn-styled radio
-    $('#answersContainer' + idx).append('\
-        <div class="trueFalseContainer">\
-            <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkAnswer(this.value)">\
-                <label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>\
-            </div>\
-            <div class="form-check">\
-                <input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkAnswer(this.value)">\
-                <label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>\
-            </div>\
-        </div>');
+    $('#answersContainer' + idx).append(
+        '<div class="trueFalseContainer">' +
+            '<div class="form-check">' +
+                '<input class="btn-check" type="radio" name="answerRadio" value="True" id="ansCont' + idx + 'A0" autocomplete="off" onchange="checkAnswer(this.value)">' +
+                '<label class="btn btn-success btn-answer" for="ansCont' + idx + 'A0">TRUE</label>' +
+            '</div>' +
+            '<div class="form-check">' +
+                '<input class="btn-check" type="radio" name="answerRadio" value="False" id="ansCont' + idx + 'A1" autocomplete="off" onchange="checkAnswer(this.value)">' +
+                '<label class="btn btn-danger btn-answer" for="ansCont' + idx + 'A1">FALSE</label>' +
+            '</div>' +
+        '</div>');
 }
 
 function checkAnswer(answer) {
@@ -301,7 +300,7 @@ const ansResultPopup = (result) => {
 
 const createCorrectAnsBtn = () => {
     // show button for correct answer
-    let ansBtn = $('<button id="showAnsBtn' + currQIndex + '" type="button" class="btn btn-info correctAndBtn" onclick="showAnsBtnClick()">Show correct answer</button>')
+    let ansBtn = $('<button id="showAnsBtn' + currQIndex + '" type="button" class="btn btn-info correctAndBtn" onclick="showAnsBtnClick()">Show correct answer</button>');
     // append behind answers
     $('#answersContainer' + currQIndex).after(ansBtn);
 }
@@ -421,7 +420,7 @@ function showAnsBtnClick() {
 function homepageBtnClicked() {
     // show categories selection and hide all other sections
     categoriesSection.removeClass('hidden');
-    difficultySection.addClass('hidden')
+    difficultySection.addClass('hidden');
     quizSection.addClass('hidden');
     resultScreen.addClass('hidden');
     // disable homepage btn to mark current page
