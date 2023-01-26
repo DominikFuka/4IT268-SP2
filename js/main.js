@@ -6,17 +6,17 @@ var selectedCategory;
 var selectedDifficulty;
 var currQIndex = 0;
 
+const quizSection = $('.quiz');
+const categoriesSection = $('.categories');
+const difficultySection = $('.difficulty');
+const difficultyContainer = $('#difficultySelection');
 const categoriesContainer = $('.categoriesContainer');
-const homepageBtn = $('#homepageBtn');
 const questionsContainer = $('#questions');
 const questionList = $('#questionList');
 const quizSuccessRatio = $('#quizSuccessRatio');
 const congratsModal = $('#congratsModal');
 const resultScreen = $('.resultScreen');
-const quizSection = $('.quiz');
-const categoriesSection = $('.categories');
-const difficultySection = $('.difficulty');
-const difficultyContainer = $('#difficultySelection');
+const homepageBtn = $('#homepageBtn');
 
 $(document).ready(() => {
     // show categories as buttons when site loads
@@ -98,12 +98,10 @@ const finishQuiz = () => {
     $('#corrAnsCount').append(sessionStorage.getItem('quizCorrectCount'));
     $('#incorrAnsCount').append(Number(AMOUNT_QUESTIONS) - Number(sessionStorage.getItem('quizCorrectCount')));
     let quizPercent = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / Number(AMOUNT_QUESTIONS);
-    quizPercent = Math.round((quizPercent + Number.EPSILON) * 100) / 100;
-    $('#corrAnsPercQuiz').append(quizPercent + ' %');
+    $('#corrAnsPercQuiz').append(roundTwoDecimals(quizPercent) + ' %');
 
     let overallPercent = 100 * Number(localStorage.getItem('correctAnsCount')) / (Number(localStorage.getItem('correctAnsCount')) + Number(localStorage.getItem('incorrectAnsCount')));
-    overallPercent = Math.round((overallPercent + Number.EPSILON) * 100) / 100;
-    $('#corrAnsPercOverall').append(overallPercent + ' %');
+    $('#corrAnsPercOverall').append(roundTwoDecimals(overallPercent) + ' %');
 
     // create button to show result screen in quiz nav above questions
     questionList.prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
@@ -243,7 +241,7 @@ const showQuizSuccessRatio = () => {
     } else {
         // show ratio rounded to two decimals
         let ratio = 100 * Number(sessionStorage.getItem('quizCorrectCount')) / ansCount;
-        quizSuccessRatio.text(Math.round((ratio + Number.EPSILON) * 100) / 100 + ' % answered correctly');
+        quizSuccessRatio.text(roundTwoDecimals(ratio) + ' % answered correctly');
         // set text color according to score
         if (ratio >= 80) {
             quizSuccessRatio.css('color', 'lightgreen');
@@ -337,6 +335,10 @@ const getCategoryName = (id) => {
         }
     });
     return categoryName;
+}
+
+const roundTwoDecimals = (number) => {
+    return Math.round((number + Number.EPSILON) * 100) / 100;
 }
 
 function decodeHTML(text) {
