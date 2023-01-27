@@ -45,7 +45,7 @@ const createCategories = () => {
                         class: 'btn btn-warning',
                         text: item.name
                     });
-                categoryNameButton.click({ id: item.id }, categoryButtonClicked);
+                categoryNameButton.on('click', { id: item.id }, categoryButtonClicked);
                 categoryBtnsArr.push(categoryNameButton);
             });
             // create button for mix of questions from all categories
