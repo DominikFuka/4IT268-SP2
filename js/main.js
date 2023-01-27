@@ -64,7 +64,7 @@ const createCategories = () => {
             // create category buttons with onclick that returns its id
             var categoryBtnsArr = [];
             $.each(categories, function (index, item) {
-                var categoryNameButton = $('<button/>',
+                var categoryNameButton = $('<button>',
                     {
                         id: item.id,
                         class: 'btn btn-warning',
@@ -84,7 +84,7 @@ const createCategories = () => {
 }
 
 const createMixedCategoryBtn = () => {
-    var mixCatButton = $('<button/>',
+    var mixCatButton = $('<button>',
         {
             id: 'mixed',
             class: 'btn btn-warning',
@@ -129,7 +129,7 @@ const finishQuiz = () => {
     $('#corrAnsPercOverall').append(roundTwoDecimals(overallPercent) + ' %');
 
     // create button to show result screen in quiz nav above questions
-    var showResultScreenBtn = $('<button/>', {
+    var showResultScreenBtn = $('<button>', {
         class: 'btn btn-warning',
         type: 'button',
         text: 'Show results'
@@ -146,7 +146,7 @@ const createQuizNav = () => {
     var questionNavBtns = [];
     $.each(questionSet, function (index, item) {
         // fill aside list
-        var questionListButton = $('<button/>',
+        var questionListButton = $('<button>',
             {
                 id: 'question' + index,
                 class: 'btn btn-dark',
@@ -166,15 +166,15 @@ const createQuestions = () => {
     var questionsArray = [];
     for (let index = 0; index < AMOUNTQUESTIONS(); index++) {
         // question headline with number
-        var questionHeadline = $('<h1/>', { text: 'Question #' + (index + 1) });
+        var questionHeadline = $('<h1>', { text: 'Question #' + (index + 1) });
         // question navigation with prev and next btns
-        var qNavPrevBtn = $('<button/>', {
+        var qNavPrevBtn = $('<button>', {
             type: 'button',
             class: 'btn btn-secondary btn-prev-q',
             click: prevQBtnClicked,
             text: decodeHTML('&#8592; Previous')
         });
-        var qNavNextBtn = $('<button/>', {
+        var qNavNextBtn = $('<button>', {
             type: 'button',
             class: 'btn btn-secondary btn-next-q',
             click: nextQBtnClicked,
@@ -184,15 +184,15 @@ const createQuestions = () => {
         qNavPrevBtn.prop('disabled', index === 0);
         qNavNextBtn.prop('disabled', index === questionSet.length - 1);
         // complete question nav
-        var questionNav = $('<div/>', { class: 'questionNav' });
+        var questionNav = $('<div>', { class: 'questionNav' });
         questionNav.append(qNavPrevBtn, qNavNextBtn);
         // question text
-        var questionText = $('<p\>', {
+        var questionText = $('<p>', {
             class: 'questionText',
             text: decodeHTML(questionSet[index].question)
         });
         // question answers form
-        var questionAnswers = $('<form/>', {
+        var questionAnswers = $('<form>', {
             id: 'answersContainer' + index,
             class: 'answersContainer',
             method: 'post'
@@ -203,7 +203,7 @@ const createQuestions = () => {
             questionAnswers.append(createBooleanAnswers(index));
         }
         // connect all parts of question
-        var questionBody = $('<section/>', {
+        var questionBody = $('<section>', {
             id: 'questionContainer' + index,
             class: 'questionContainer'
         });
@@ -238,7 +238,7 @@ const createMultipleAnswers = (idx) => {
     var ansInputs = [];
     $.each(answers, function (index, item) {
         // add Bootstrap structure for each radio answer
-        var inputRadio = $('<input/>', {
+        var inputRadio = $('<input>', {
             id: 'ansCont' + idx + 'A' + (index + 1),
             class: 'form-check-input',
             type: 'radio',
@@ -246,13 +246,13 @@ const createMultipleAnswers = (idx) => {
             value: decodeHTML(item)
         });
         inputRadio.on('click', { value: decodeHTML(item) }, checkAnswer);
-        var inputRadioLabel = $('<label/>', {
+        var inputRadioLabel = $('<label>', {
             class: 'form-check-label',
             for: 'ansCont' + idx + 'A' + (index + 1),
             text: decodeHTML(item)
         });
         // complete input answer
-        var inputBody = $('<div/>', { class: 'form-check' });
+        var inputBody = $('<div>', { class: 'form-check' });
         inputBody.append(inputRadio, inputRadioLabel);
         // add to answers inputs
         ansInputs.push(inputBody);
@@ -263,9 +263,9 @@ const createMultipleAnswers = (idx) => {
 
 const createBooleanAnswers = (idx) => {
     // Bootstrap structure with btn-styled radios
-    var truefalseAnsBody = $('<div/>', { class: 'trueFalseContainer' });
+    var truefalseAnsBody = $('<div>', { class: 'trueFalseContainer' });
     // true btn and label
-    var trueBtn = $('<input/>', {
+    var trueBtn = $('<input>', {
         id: 'ansCont' + idx + 'A0',
         class: 'btn-check',
         type: 'radio',
@@ -273,15 +273,15 @@ const createBooleanAnswers = (idx) => {
         autocomplete: 'off'
     });
     trueBtn.on('click', { value: 'True' }, checkAnswer);
-    var trueBtnLabel = $('<label/>', {
+    var trueBtnLabel = $('<label>', {
         class: 'btn btn-success btn-answer',
         for: 'ansCont' + idx + 'A0',
         text: 'TRUE'
     });
-    var trueBody = $('<div/>', { class: 'form-check' });
+    var trueBody = $('<div>', { class: 'form-check' });
     trueBody.append(trueBtn, trueBtnLabel);
     // false btn and label
-    var falseBtn = $('<input/>', {
+    var falseBtn = $('<input>', {
         id: 'ansCont' + idx + 'A1',
         class: 'btn-check',
         type: 'radio',
@@ -289,12 +289,12 @@ const createBooleanAnswers = (idx) => {
         autocomplete: 'off'
     });
     falseBtn.on('click', { value: 'False' }, checkAnswer);
-    var falseBtnLabel = $('<label/>', {
+    var falseBtnLabel = $('<label>', {
         class: 'btn btn-danger btn-answer',
         for: 'ansCont' + idx + 'A1',
         text: 'FALSE'
     });
-    var falseBody = $('<div/>', { class: 'form-check' });
+    var falseBody = $('<div>', { class: 'form-check' });
     falseBody.append(falseBtn, falseBtnLabel);
     // complete structure
     truefalseAnsBody.append(trueBody, falseBody);
@@ -390,7 +390,7 @@ const incrIncorrectAnsCount = () => {
 
 const ansResultPopup = (result) => {
     // alert div using Bootstrap
-    let resultMsg = $('<div/>',
+    let resultMsg = $('<div>',
         {
             class: 'alert resultPopup'
         });
@@ -414,7 +414,7 @@ const ansResultPopup = (result) => {
 
 const createCorrectAnsBtn = () => {
     // show button for correct answer
-    let ansBtn = $('<button/>', {
+    let ansBtn = $('<button>', {
         id: 'showAnsBtn' + currQIndex,
         class: 'btn btn-info correctAnsBtn',
         type: 'button',
@@ -530,7 +530,7 @@ function showAnsBtnClick() {
     // remove button that was clicked
     $('#showAnsBtn' + currQIndex).remove();
     // create alert div with correct answer
-    let correctAnsAlert = $('<div/>', {
+    let correctAnsAlert = $('<div>', {
         class: 'alert alert-info correctAnsPopup',
     });
     correctAnsAlert.html('Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b>');
@@ -605,7 +605,7 @@ function difficultyButtonClicked(param) {
 }
 
 const showNotEnoughQuestionsWarning = () => {
-    let errorMsg = $('<div/>',
+    let errorMsg = $('<div>',
         {
             class: 'alert alert-danger alertNotEnoughQs'
         });
