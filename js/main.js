@@ -17,9 +17,32 @@ const quizSuccessRatio = $('#quizSuccessRatio');
 const congratsModal = $('#congratsModal');
 const resultScreen = $('.resultScreen');
 const homepageBtn = $('#homepageBtn');
+const hideCongratsModalBtn = $('#hideCongratsModalBtn');
+const showResultScreenModalBtn = $('#showResultScreenModalBtn');
+const easyDiffBtn = $('#easyDiffBtn');
+const mediumDiffBtn = $('#mediumDiffBtn');
+const hardDiffBtn = $('#hardDiffBtn');
+const restartQuizBtn = $('#restartQuizBtn');
+const resScrHideBtn = $('#resScrHideBtn');
+const resScrNewQuizBtn = $('#resScrNewQuizBtn');
+const resScrSimilarQuizBtn = $('#resScrSimilarQuizBtn');
+const resScrResetQuizBtn = $('#resScrResetQuizBtn');
 
 $(document).ready(() => {
     // TODO add whole code here so it is enclosed
+
+    // add event listeners to buttons in html
+    homepageBtn.on('click', homepageBtnClicked);
+    hideCongratsModalBtn.on('click', hideCongratsModal);
+    showResultScreenModalBtn.on('click', showResultScreenBtnClick);
+    easyDiffBtn.on('click', { diff: 'easy' }, difficultyButtonClicked);
+    mediumDiffBtn.on('click', { diff: 'medium' }, difficultyButtonClicked);
+    hardDiffBtn.on('click', { diff: 'hard' }, difficultyButtonClicked);
+    restartQuizBtn.on('click', restartQuiz);
+    resScrHideBtn.on('click', hideResultScreen);
+    resScrNewQuizBtn.on('click', homepageBtnClicked);
+    resScrSimilarQuizBtn.on('click', newQuizSameSettingsBtnClick);
+    resScrResetQuizBtn.on('click', newQuizSameQuestionsBtnClick);
 
     // show categories as buttons when site loads
     createCategories();
@@ -511,7 +534,6 @@ function showAnsBtnClick() {
         class: 'alert alert-info correctAnsPopup',
     });
     correctAnsAlert.html('Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b>');
-    //let correctAnsAlert = $('<div class="alert alert-info correctAnsPopup">Correct answer was: <b>' + decodeHTML(questionSet[currQIndex].correct_answer) + '</b></div>');
     // attach it behind answers
     $('#answersContainer' + currQIndex).after(correctAnsAlert);
 }
@@ -550,9 +572,9 @@ function categoryButtonClicked(param) {
     homepageBtn.prop('disabled', false);
 }
 
-function difficultyButtonClicked(difficulty) {
+function difficultyButtonClicked(param) {
     // set selected difficulty for result screen
-    selectedDifficulty = difficulty;
+    selectedDifficulty = param.data.diff;
     // show loader
     difficultyContainer.addClass('hidden');
     difficultySection.append(getLoaderElement());
