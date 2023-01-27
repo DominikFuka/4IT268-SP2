@@ -19,6 +19,8 @@ const resultScreen = $('.resultScreen');
 const homepageBtn = $('#homepageBtn');
 
 $(document).ready(() => {
+    // TODO add whole code here so it is enclosed
+
     // show categories as buttons when site loads
     createCategories();
 
@@ -104,7 +106,13 @@ const finishQuiz = () => {
     $('#corrAnsPercOverall').append(roundTwoDecimals(overallPercent) + ' %');
 
     // create button to show result screen in quiz nav above questions
-    questionList.prepend('<button type="button" class="btn btn-warning" onclick="showResultScreenBtnClick()">Show results</button>');
+    var showResultScreenBtn = $('<button/>', {
+        class: 'btn btn-warning',
+        type: 'button',
+        text: 'Show results'
+    });
+    showResultScreenBtn.on('click', showResultScreenBtnClick);
+    questionList.prepend(showResultScreenBtn);
 
     // open modal with congratulations (Bootstrap)
     congratsModal.modal('show');
@@ -121,7 +129,7 @@ const createQuizNav = () => {
                 class: 'btn btn-dark',
                 text: 'QUESTION #' + (index + 1)
             });
-        questionListButton.click({ goToIdx: index }, jumpToQuestion);
+        questionListButton.on('click', { goToIdx: index }, jumpToQuestion);
         questionNavBtns.push(questionListButton);
     });
     // append as a document fragment all at once
