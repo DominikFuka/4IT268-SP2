@@ -65,7 +65,7 @@ const createMixedCategoryBtn = () => {
             class: 'btn btn-warning',
             text: 'Mix of all categories'
         });
-    mixCatButton.click({ id: 'mixed' }, categoryButtonClicked);
+    mixCatButton.on('click', { id: 'mixed' }, categoryButtonClicked);
     return mixCatButton;
 }
 
